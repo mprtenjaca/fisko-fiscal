@@ -1,0 +1,41 @@
+.error{
+    margin: 4px;
+    color: #FF0000;
+}
+
+.dropdownSelect{
+    background-color: transparent;
+    border: 1px solid #E3E3E3;
+    padding: 8px;
+    width: 100%;
+    border-radius: 30px;
+    color: #2c2c2c;
+    line-height: normal;
+    height: auto;
+    font-size: 14px;
+    transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.center-custom h5{
+    float: left;
+    margin: 8px;
+}
+.center-custom button{
+    margin: 5px;
+}
+
+.editor{
+    justify-content: space-between;
+    display: inline-grid;
+}
+
+.delete{
+    text-align: right;
+}
+
+.edit-company{
+    font-size: 25px;
+    color: red;
+    margin-top: 2px;
+    margin-left: 20px;
+}
