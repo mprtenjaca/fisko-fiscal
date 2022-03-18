@@ -97,6 +97,10 @@ public class User implements UserDetails {
     private Set<ServiceDetails> serviceDetails = new HashSet<>();
 
     @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<InputInvoice> inputInvoices = new HashSet<>();
+
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Company company;
 
