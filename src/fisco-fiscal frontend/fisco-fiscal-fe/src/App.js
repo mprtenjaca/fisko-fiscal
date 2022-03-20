@@ -31,8 +31,6 @@ const App = () => {
       dispatch(getCompany(auth));
     }
     dispatch(refreshToken());
-
-    history.push(history.location.pathname);
   }, [dispatch, auth.token]);
 
 
@@ -55,7 +53,7 @@ const App = () => {
             )}
             <Redirect to={auth.token ? 
 
-              history.location.pathname === "/login" ? "/admin/dashboard" : history.location.pathname
+              history.location.pathname === "/login" || history.location.pathname === "/" ? "/admin/dashboard" : history.location.pathname
               
               : "/login"} />
           </Switch>
