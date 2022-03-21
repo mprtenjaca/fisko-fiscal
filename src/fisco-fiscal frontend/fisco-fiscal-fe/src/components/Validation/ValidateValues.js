@@ -70,30 +70,32 @@ export const customerValidation = (values) => {
   export const invoiceServiceDetailsValidation = (values) => {
     const errors = {};
     
-    if (!values.measureUnit) {
-      errors.measureUnit = "Measure unit is required!";
-    }
-    if (values.amount <= 0) {
-      errors.amount = "Amount is required!";
-    }else if(values.amount <= 0){
-      errors.priamountce = "Amount must be greater than 0";
-    }
-    if (!values.price) {
-      errors.price = "Price is required!";
-    }else if(values.price <= 0){
-      errors.price = "Price must be greater than 0";
-    }
-    if (!values.discount) {
-      errors.discount = "Discount is required!";
-    }
-    if (!values.taxRate) {
-      errors.taxRate = "Tax rate is required!";
-    }else if(values.taxRate  <= 0){
-      errors.taxRate = "Tax rate must be greater than 0";
-    }
-    if (!values.serviceDescription) {
-      errors.serviceDescription = "Service description is required!";
-    }
+    values.map(value => {
+      if (!value.measureUnit) {
+        errors.measureUnit = "Measure unit is required!";
+      }
+      if (value.amount <= 0) {
+        errors.amount = "Amount is required!";
+      }else if(value.amount <= 0){
+        errors.priamountce = "Amount must be greater than 0";
+      }
+      if (!value.price) {
+        errors.price = "Price is required!";
+      }else if(value.price <= 0){
+        errors.price = "Price must be greater than 0";
+      }
+      if (!value.discount) {
+        errors.discount = "Discount is required!";
+      }
+      if (!value.taxRate) {
+        errors.taxRate = "Tax rate is required!";
+      }else if(value.taxRate  <= 0){
+        errors.taxRate = "Tax rate must be greater than 0";
+      }
+      if (!value.serviceDescription) {
+        errors.serviceDescription = "Service description is required!";
+      }
+    })
 
     return errors;
   };

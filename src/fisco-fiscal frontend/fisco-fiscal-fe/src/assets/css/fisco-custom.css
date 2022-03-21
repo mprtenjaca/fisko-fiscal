@@ -39,3 +39,19 @@
     margin-top: 2px;
     margin-left: 20px;
 }
+
+.details-section{
+    margin: 5px 0 15px 0;
+    background: #e3e3e3;
+    padding: 10px;
+    box-shadow: 0px 1px 3px -1px;
+}
+
+.details-section input,
+.details-section .dropdownSelect{
+    border-color: #b9b9b9;
+}
+
+.details-section textarea{
+    border: 1.5px solid #ced4da;
+}
