@@ -15,14 +15,20 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -38,14 +44,18 @@ public class ServiceDetails {
     @Enumerated(EnumType.STRING)
     private MeasureUnit measureUnit;
     private Integer amount;
-    private BigDecimal price;
     private Integer discount;
     private Integer taxRate;
+    private BigDecimal price;
+    private BigDecimal finalPrice;
 
-    @OneToOne(mappedBy = "serviceDetails")
-    @JoinColumn(name = "output_invoice_id")
-    @JsonIgnore
-    private OutputInvoice outputInvoice;
+//    @OneToOne(mappedBy = "serviceDetails")
+//    @JoinColumn(name = "output_invoice_id")
+//    @JsonIgnore
+//    private OutputInvoice outputInvoice;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "output_invoice_id", referencedColumnName = "id")
+//    private OutputInvoice outputInvoice;
 
     @OneToOne(mappedBy = "serviceDetails", cascade = CascadeType.ALL)
     @JsonIgnore

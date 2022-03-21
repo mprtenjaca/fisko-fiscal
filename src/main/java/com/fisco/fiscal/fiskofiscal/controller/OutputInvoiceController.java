@@ -88,16 +88,16 @@ public class OutputInvoiceController {
     public ResponseEntity<OutputInvoice> update(@PathVariable Long id, @RequestBody final OutputInvoice outputInvoice){
         Optional<Customer> customer = customerService.getById(outputInvoice.getCustomer().getId());
         Optional<ServiceModel> serviceModel = serviceModelService.getById(outputInvoice.getServiceModel().getId());
-        Optional<ServiceDetails> serviceDetails = serviceDetailsService.getById(outputInvoice.getServiceDetails().getId());
+        //Optional<ServiceDetails> serviceDetails = serviceDetailsService.getById(outputInvoice.getServiceDetails().getId());
         Optional<User> user = userService.getUserById(outputInvoice.getUser().getId());
 
-        serviceDetailsService.update(outputInvoice.getServiceDetails().getId(), outputInvoice.getServiceDetails());
+        //serviceDetailsService.update(outputInvoice.getServiceDetails().getId(), outputInvoice.getServiceDetails());
 
         outputInvoice.setUser(user.get());
         outputInvoice.setCustomer(customer.get());
         outputInvoice.setServiceModel(serviceModel.get());
         outputInvoice.setServiceModel(serviceModel.get());
-        outputInvoice.setServiceDetails(serviceDetails.get());
+        //outputInvoice.setServiceDetails(serviceDetails.get());
 
         OutputInvoice outputInvoiceNew = outputInvoiceService.save(outputInvoice);
         Optional<OutputInvoice> outputInvoiceOptional = outputInvoiceService.update(id, outputInvoiceNew);
@@ -117,10 +117,10 @@ public class OutputInvoiceController {
 //            Optional<User> user = userService.getUserById(outputInvoice.get().getUser().getId());
 //            Optional<Customer> customer = customerService.getById(outputInvoice.get().getCustomer().getId());
 //            Optional<ServiceModel> serviceModel = serviceModelService.getById(outputInvoice.get().getServiceModel().getId());
-            Optional<ServiceDetails> serviceDetail = serviceDetailsService.getById(outputInvoice.get().getServiceDetails().getId());
+           // THIS WILL BE ADDED  //Optional<ServiceDetails> serviceDetail = serviceDetailsService.getById(outputInvoice.get().getServiceDetails().getId());
 
-            if(serviceDetail.isPresent())
-                serviceDetailsService.delete(serviceDetail.get().getId());
+// THIS TOO            if(serviceDetail.isPresent())
+//                serviceDetailsService.delete(serviceDetail.get().getId());
 
             outputInvoiceService.delete(id);
         }catch (EmptyResultDataAccessException e){

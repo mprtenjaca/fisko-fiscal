@@ -42,15 +42,14 @@ public class ServiceModel implements Serializable {
     private Integer serviceNumber;
     private String serviceName;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @OneToMany(mappedBy = "serviceModel", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     //@JsonIgnore
     //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIgnore
+    @OneToMany(mappedBy = "serviceModel", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<OutputInvoice> outputInvoices = new HashSet<>();
 
     @OneToMany(mappedBy = "serviceModel", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
