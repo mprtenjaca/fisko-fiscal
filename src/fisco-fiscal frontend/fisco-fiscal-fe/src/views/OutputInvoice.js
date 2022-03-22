@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateOutputInvoice } from "redux/actions/outputInvoiceAction";
 import { createOutputInvoice } from "redux/actions/outputInvoiceAction";
 import { deleteOutputInvoice } from "redux/actions/outputInvoiceAction";
+import { useHistory } from "react-router-dom";
 
 const OutputInvoice = () => {
   const [formErrors, setFromErrors] = useState({
@@ -50,11 +51,11 @@ const OutputInvoice = () => {
   const serviceDetailsEmptyData = {
     serviceDescription: "",
     measureUnit: "",
-    amount: null,
+    amount: 1,
     price: null,
-    discount: null,
-    taxRate: null,
-  }
+    discount: 0,
+    taxRate: 0,
+  };
 
   const [optionData, setOptionData] = useState({
     customerId: 0,
@@ -74,11 +75,11 @@ const OutputInvoice = () => {
       {
         serviceDescription: "",
         measureUnit: "",
-        amount: null,
+        amount: 1,
         price: null,
         finalPrice: null,
-        discount: null,
-        taxRate: null,
+        discount: 0,
+        taxRate: 0,
       },
     ],
     paymentMethod: "",
@@ -88,6 +89,7 @@ const OutputInvoice = () => {
   };
 
   const dispatch = useDispatch();
+  const history = useHistory();
   const { outputInvoiceRed, customersRed, serviceRed, auth } = useSelector(
     (state) => state
   );
@@ -150,20 +152,29 @@ const OutputInvoice = () => {
   ];
 
   useEffect(() => {
+
     setOutputInvoiceData({
       ...outputInvoiceData,
       user: auth.user,
     });
-
     setOutputInvoices(outputInvoiceRed.outputInvoices);
     setCustomers(customersRed.customers);
     setServicesData(serviceRed.services);
-
   }, [outputInvoiceRed.outputInvoices]);
 
   const handleAddDetailsSection = (e) => {
-    setOutputInvoiceData({...outputInvoiceData, serviceDetails: [...serviceDetails, serviceDetailsEmptyData]})
-  }
+    setOutputInvoiceData({
+      ...outputInvoiceData,
+      serviceDetails: [...serviceDetails, serviceDetailsEmptyData],
+    });
+  };
+
+  const handleViewPDF = () => {
+    history.push({
+      pathname: "/admin/pdf",
+      state: { invoice: outputInvoiceData },
+    });
+  };
 
   const handleRootInput = (e) => {
     setOutputInvoiceData({
@@ -174,60 +185,72 @@ const OutputInvoice = () => {
   };
 
   const handleServiceDetailsChangeInput = (id, index) => (e) => {
-
     let editedObject = outputInvoiceData.serviceDetails;
-    editedObject[index][e.target.name] = e.target.type === "number" ? parseInt(e.target.value) : e.target.value;
-    setOutputInvoiceData({...outputInvoiceData, serviceDetails: editedObject});
+    editedObject[index][e.target.name] =
+      e.target.type === "number" ? parseInt(e.target.value) : e.target.value;
+    setOutputInvoiceData({
+      ...outputInvoiceData,
+      serviceDetails: editedObject,
+    });
     handleFinalPrice(index);
   };
 
   const handleFinalPrice = (index) => {
-
     let finalPrice = 0;
     let editedList = outputInvoiceData.serviceDetails;
     let editedObject = editedList[index];
 
-    if(editedObject.price){
-      if(editedObject.taxRate > 0){
+    if (editedObject.price) {
+      if (editedObject.taxRate > 0) {
         let tax = (editedObject.taxRate / 100) * editedObject.price;
         finalPrice = editedObject.price + tax;
       }
-      
-      if(editedObject.taxRate > 0 && editedObject.discount > 0){
+
+      if (editedObject.taxRate > 0 && editedObject.discount > 0) {
         let disc = (editedObject.discount / 100) * finalPrice;
         finalPrice = finalPrice - disc;
       }
-  
-      if((!editedObject.taxRate ||  editedObject.taxRate <= 0) && (editedObject.discount > 0)){
+
+      if (
+        (!editedObject.taxRate || editedObject.taxRate <= 0) &&
+        editedObject.discount > 0
+      ) {
         let disc = (editedObject.discount / 100) * editedObject.price;
         finalPrice = editedObject.price - disc;
       }
-  
-      if(((!editedObject.taxRate) && (!editedObject.discount)) || ((editedObject.taxRate <= 0)  && (editedObject.discount <= 0))){
-        finalPrice = editedObject.price
-      }
-  
-      if(editedObject.amount > 1)
-        finalPrice = finalPrice * editedObject.amount;
 
+      if (
+        (!editedObject.taxRate && !editedObject.discount) ||
+        (editedObject.taxRate <= 0 && editedObject.discount <= 0)
+      ) {
+        finalPrice = editedObject.price;
+      }
+
+      if (editedObject.amount > 1)
+        finalPrice = finalPrice * editedObject.amount;
     }
 
     editedObject.finalPrice = finalPrice;
-    setOutputInvoiceData({...outputInvoiceData, 
+    setOutputInvoiceData({
+      ...outputInvoiceData,
       serviceDetails: editedList,
-      finalPrice: (outputInvoiceData.serviceDetails.reduce((a,v) =>  a = a + v.finalPrice , 0 ))});
-    
-  }
+      finalPrice: outputInvoiceData.serviceDetails.reduce(
+        (a, v) => (a = a + v.finalPrice),
+        0
+      ),
+    });
+  };
 
   const handleDeleteDetailsSection = (idx) => (e) => {
-
     let updatedList = outputInvoiceData.serviceDetails.filter((item, index) => {
-      if(index != idx)
-        return item
+      if (index != idx) return item;
     });
-    setOutputInvoiceData({...outputInvoiceData, serviceDetails: updatedList,
-    finalPrice: (updatedList.reduce((a,v) =>  a = a + v.finalPrice , 0 ))});
-  }
+    setOutputInvoiceData({
+      ...outputInvoiceData,
+      serviceDetails: updatedList,
+      finalPrice: updatedList.reduce((a, v) => (a = a + v.finalPrice), 0),
+    });
+  };
 
   const handleChangeInput = (level) => (e) => {
     if (!level) {
@@ -296,11 +319,9 @@ const OutputInvoice = () => {
     //   invoiceServiceDetailsValidation(outputInvoiceData.serviceDetails)
     // );
 
-    
     //Object.keys(invoiceServiceDetailsValidation(outputInvoiceData.serviceDetails)).length === 0
 
     if (Object.keys(outputInvoiceValidation(outputInvoiceData)).length === 0) {
-
       if (isEditedOutputInvoice) {
         dispatch(updateOutputInvoice(outputInvoiceData, auth));
         setOutputInvoiceData(initialOutputInvoiceDataState);
@@ -316,6 +337,7 @@ const OutputInvoice = () => {
   return (
     <>
       <PanelHeader size="sm" />
+
       <div className="content">
         <Row>
           <Col md="12">
@@ -325,13 +347,18 @@ const OutputInvoice = () => {
                   <Col md="12" className="center-custom">
                     <h5 className="title">Output Invoice</h5>
                     {isEditedOutputInvoice ? (
-                      <Button
-                        variant="info"
-                        type="button"
-                        onClick={handleNewOutputInvoiceAction}
-                      >
-                        Add new
-                      </Button>
+                      <>
+                        <Button
+                          variant="info"
+                          type="button"
+                          onClick={handleNewOutputInvoiceAction}
+                        >
+                          Add new
+                        </Button>
+                        <Button type="button" onClick={handleViewPDF}>
+                          PDF
+                        </Button>
+                      </>
                     ) : (
                       <></>
                     )}
@@ -453,10 +480,17 @@ const OutputInvoice = () => {
                     return (
                       <div key={index}>
                         <div className="details-section">
-                        <i className="now-ui-icons ui-1_simple-remove" 
-                          style={{float: "right", color: "black", fontWeight: "bold", fontSize: "20px", cursor: "pointer"}}
-                          onClick={handleDeleteDetailsSection(index)}
-                        />
+                          <i
+                            className="now-ui-icons ui-1_simple-remove"
+                            style={{
+                              float: "right",
+                              color: "black",
+                              fontWeight: "bold",
+                              fontSize: "20px",
+                              cursor: "pointer",
+                            }}
+                            onClick={handleDeleteDetailsSection(index)}
+                          />
                           <Row>
                             <Col className="pr-1" md="4">
                               <FormGroup>
@@ -464,14 +498,20 @@ const OutputInvoice = () => {
                                 <br />
                                 <select
                                   className="dropdownSelect"
-                                  onChange={handleServiceDetailsChangeInput(detail.id, index)}
+                                  required
+                                  onChange={handleServiceDetailsChangeInput(
+                                    detail.id,
+                                    index
+                                  )}
                                   name="measureUnit"
                                 >
                                   <option value={detail.measureUnit}>
                                     Select
                                   </option>
                                   {measureUnits.map((measureUnit) => {
-                                    if (measureUnit.value === detail.measureUnit) {
+                                    if (
+                                      measureUnit.value === detail.measureUnit
+                                    ) {
                                       return (
                                         <option
                                           selected
@@ -502,8 +542,12 @@ const OutputInvoice = () => {
                                 <label>Amount</label>
                                 <Input
                                   placeholder="0"
+                                  min={1}
                                   value={detail.amount}
-                                  onChange={handleServiceDetailsChangeInput(detail.id, index)}
+                                  onChange={handleServiceDetailsChangeInput(
+                                    detail.id,
+                                    index
+                                  )}
                                   name="amount"
                                   type="number"
                                 />
@@ -518,7 +562,10 @@ const OutputInvoice = () => {
                                 <Input
                                   placeholder="0,00 kn"
                                   value={detail.price}
-                                  onChange={handleServiceDetailsChangeInput(detail.id, index)}
+                                  onChange={handleServiceDetailsChangeInput(
+                                    detail.id,
+                                    index
+                                  )}
                                   required
                                   min="0.00"
                                   max="999999"
@@ -537,8 +584,13 @@ const OutputInvoice = () => {
                                 <label>Tax rate %</label>
                                 <Input
                                   placeholder="0%"
-                                  value={detail.taxRate === null ? 0 : detail.taxRate}
-                                  onChange={handleServiceDetailsChangeInput(detail.id, index)}
+                                  value={
+                                    detail.taxRate === null ? 0 : detail.taxRate
+                                  }
+                                  onChange={handleServiceDetailsChangeInput(
+                                    detail.id,
+                                    index
+                                  )}
                                   type="number"
                                   name="taxRate"
                                 />
@@ -553,7 +605,10 @@ const OutputInvoice = () => {
                                 <Input
                                   placeholder="0%"
                                   value={detail.discount}
-                                  onChange={handleServiceDetailsChangeInput(detail.id, index)}
+                                  onChange={handleServiceDetailsChangeInput(
+                                    detail.id,
+                                    index
+                                  )}
                                   name="discount"
                                   type="number"
                                 />
@@ -577,7 +632,10 @@ const OutputInvoice = () => {
                                     rows="6"
                                     placeholder="Service description"
                                     value={detail.serviceDescription}
-                                    onChange={handleServiceDetailsChangeInput(detail.id, index)}
+                                    onChange={handleServiceDetailsChangeInput(
+                                      detail.id,
+                                      index
+                                    )}
                                     name="serviceDescription"
                                   />
                                   <p className="error">
@@ -593,7 +651,13 @@ const OutputInvoice = () => {
                   })}
                   <Row>
                     <Col md="2">
-                      <Button className="rounded-sm" type="button" onClick={handleAddDetailsSection}><i className="now-ui-icons ui-1_simple-add"/></Button>
+                      <Button
+                        className="rounded-sm"
+                        type="button"
+                        onClick={handleAddDetailsSection}
+                      >
+                        <i className="now-ui-icons ui-1_simple-add" />
+                      </Button>
                     </Col>
                   </Row>
                   <Row>
@@ -709,9 +773,7 @@ const OutputInvoice = () => {
                           <td>
                             {data.customer.firstName} {data.customer.lastName}
                           </td>
-                          <td>
-                            {data.finalPrice} kn
-                            </td>
+                          <td>{data.finalPrice} kn</td>
                           <td>{data.dateAndTime}</td>
                           <td>{data.deliveryDate}</td>
                         </tr>

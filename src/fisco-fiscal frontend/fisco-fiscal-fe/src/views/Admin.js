@@ -9,6 +9,7 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
+import PDFFileView from "components/PDFFileView";
 
 var ps;
 
@@ -59,6 +60,11 @@ function Admin(props) {
               />
             );
           })}
+          <Route
+                path="/admin/pdf"
+                component={PDFFileView}
+                key={1}
+              />
           {/* <Redirect from="/admin" to="/admin/dashboard" /> */}
         </Switch>
         <Footer fluid />
