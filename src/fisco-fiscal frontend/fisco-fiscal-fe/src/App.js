@@ -46,7 +46,7 @@ const App = () => {
             )}
             <Redirect to={auth.token ? "/admin" : "/login"} /> */}
             
-            {localStorage.getItem("tkn_fisco") && auth.token ? (
+            { auth.token ? (
               <Route path="/admin" render={(props) => <Admin {...props} />} />
             ) : (
               <Route path="/login" component={Login} />

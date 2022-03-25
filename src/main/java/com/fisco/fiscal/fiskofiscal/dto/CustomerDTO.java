@@ -12,6 +12,7 @@ public class CustomerDTO {
     private Long id;
     private String firstName;
     private String lastName;
+    private String companyName;
     private String address;
     private String email;
     private String oib;
@@ -21,10 +22,11 @@ public class CustomerDTO {
     private String phoneNumber;
     private String fax;
 
-    public CustomerDTO(Long id, String firstName, String lastName, String address, String email, String oib, String city, String postalCode, String country, String phoneNumber, String fax) {
+    public CustomerDTO(Long id, String firstName, String lastName, String companyName, String address, String email, String oib, String city, String postalCode, String country, String phoneNumber, String fax) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.companyName = companyName;
         this.address = address;
         this.email = email;
         this.oib = oib;

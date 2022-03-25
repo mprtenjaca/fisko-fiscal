@@ -1,12 +1,7 @@
 package com.fisco.fiscal.fiskofiscal.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -35,6 +30,7 @@ public class Customer {
     private Long id;
     private String firstName;
     private String lastName;
+    private String companyName;
     private String address;
     private String email;
     private String oib;

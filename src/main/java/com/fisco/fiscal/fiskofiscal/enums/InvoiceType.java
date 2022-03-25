@@ -9,8 +9,8 @@ public enum InvoiceType {
     R("R"),
     R1("R1"),
     R2("R2"),
-    AVANSNI("Avansni"),
-    OTHER("OTHER");
+    AVANSNI("AVANSNI"),
+    OSTALO("OSTALO");
 
     private String value;
 

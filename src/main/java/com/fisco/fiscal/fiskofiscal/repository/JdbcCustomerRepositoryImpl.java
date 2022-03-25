@@ -27,6 +27,7 @@ public class JdbcCustomerRepositoryImpl implements JdbcCustomerRepository, Utils
         String updateQuery = "UPDATE customer set " +
                 "first_name = ?, " +
                 "last_name = ?, " +
+                "company_name = ?, " +
                 "email= ?, " +
                 "oib = ?, " +
                 "address = ?, " +
@@ -40,6 +41,7 @@ public class JdbcCustomerRepositoryImpl implements JdbcCustomerRepository, Utils
         jdbc.update(updateQuery,
                 customer.getFirstName(),
                 customer.getLastName(),
+                customer.getCompanyName(),
                 customer.getEmail(),
                 customer.getOib(),
                 customer.getAddress(),

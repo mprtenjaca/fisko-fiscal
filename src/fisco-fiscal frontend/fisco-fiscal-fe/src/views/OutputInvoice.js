@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // reactstrap components
 import {
@@ -29,6 +29,9 @@ import { updateOutputInvoice } from "redux/actions/outputInvoiceAction";
 import { createOutputInvoice } from "redux/actions/outputInvoiceAction";
 import { deleteOutputInvoice } from "redux/actions/outputInvoiceAction";
 import { useHistory } from "react-router-dom";
+import Dialog from "components/FixedPlugin/CustomDialog";
+import ReactNotificationAlert from "react-notification-alert";
+import notify from "variables/notify";
 
 const OutputInvoice = () => {
   const [formErrors, setFromErrors] = useState({
@@ -52,9 +55,9 @@ const OutputInvoice = () => {
     serviceDescription: "",
     measureUnit: "",
     amount: 1,
-    price: null,
-    discount: 0,
-    taxRate: 0,
+    price: "",
+    discount: "",
+    taxRate: "",
   };
 
   const [optionData, setOptionData] = useState({
@@ -76,10 +79,10 @@ const OutputInvoice = () => {
         serviceDescription: "",
         measureUnit: "",
         amount: 1,
-        price: null,
-        finalPrice: null,
-        discount: 0,
-        taxRate: 0,
+        price: "",
+        finalPrice: 0,
+        discount: "",
+        taxRate: "",
       },
     ],
     paymentMethod: "",
@@ -90,14 +93,19 @@ const OutputInvoice = () => {
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const { outputInvoiceRed, customersRed, serviceRed, auth } = useSelector(
+  const { outputInvoiceRed, customersRed, serviceRed, companyRed, auth } = useSelector(
     (state) => state
   );
-  const [serviceDetailData, setServiceDetailData] = useState([]);
-  const [isSubmit, setIsSubmit] = useState(false);
-  const [final, setFinal] = useState(0);
+
+  const [dialog, setDialog] = useState({
+    message: "",
+    isLoading: false
+  });
+
+  const notificationAlert = useRef();
   const [isEditedOutputInvoice, setIsEditedOutputInvoice] = useState(false);
   const [customers, setCustomers] = useState([]);
+  const [companyData, setCompanyData] = useState({});
   const [servicesData, setServicesData] = useState([]);
   const [outputInvoices, setOutputInvoices] = useState([]);
   const [outputInvoiceData, setOutputInvoiceData] = useState(
@@ -121,7 +129,7 @@ const OutputInvoice = () => {
     { value: "R1" },
     { value: "R2" },
     { value: "AVANSNI" },
-    { value: "OTHER" },
+    { value: "OSTALO" },
   ];
 
   const measureUnits = [
@@ -145,10 +153,10 @@ const OutputInvoice = () => {
   ];
 
   const paymentMethods = [
-    { value: "CASH" },
-    { value: "CARD" },
-    { value: "CHECK" },
-    { value: "OTHER" },
+    { value: "GOTOVINA" },
+    { value: "KARTICA" },
+    { value: "ČEK" },
+    { value: "OSTALO" },
   ];
 
   useEffect(() => {
@@ -162,6 +170,29 @@ const OutputInvoice = () => {
     setServicesData(serviceRed.services);
   }, [outputInvoiceRed.outputInvoices]);
 
+    // Confirmation dialog
+    const handleDialog = (message, isLoading) => {
+      setDialog({
+        message,
+        isLoading
+      });
+    };
+  
+    const handleAction = (e) => {
+      handleDialog("Jeste li siguni da želite obrisati račun br." + outputInvoiceData.invoiceNumber , true);
+    };
+  
+    const handleConfirmation = (choose, e) => {
+      console.log(e)
+      if (choose) {
+        //ACTION
+        handleDialog("", false);
+        handleDeleteOutputInvoice(e);
+      } else {
+        handleDialog("", false);
+      }
+    };
+
   const handleAddDetailsSection = (e) => {
     setOutputInvoiceData({
       ...outputInvoiceData,
@@ -172,7 +203,7 @@ const OutputInvoice = () => {
   const handleViewPDF = () => {
     history.push({
       pathname: "/admin/pdf",
-      state: { invoice: outputInvoiceData },
+      state: { invoice: outputInvoiceData},
     });
   };
 
@@ -211,23 +242,25 @@ const OutputInvoice = () => {
         finalPrice = finalPrice - disc;
       }
 
-      if (
-        (!editedObject.taxRate || editedObject.taxRate <= 0) &&
-        editedObject.discount > 0
-      ) {
+      if ((!editedObject.taxRate || editedObject.taxRate <= 0) && editedObject.discount > 0) {
         let disc = (editedObject.discount / 100) * editedObject.price;
         finalPrice = editedObject.price - disc;
       }
 
-      if (
-        (!editedObject.taxRate && !editedObject.discount) ||
-        (editedObject.taxRate <= 0 && editedObject.discount <= 0)
-      ) {
+      if ((!editedObject.taxRate && !editedObject.discount) || (editedObject.taxRate <= 0 && editedObject.discount <= 0)) {
         finalPrice = editedObject.price;
       }
 
-      if (editedObject.amount > 1)
+      if(!editedObject.taxRate){
+        editedObject.taxRate = ""
+      }
+      if(!editedObject.discount){
+        editedObject.discount = ""
+      }
+
+      if (editedObject.amount > 1){
         finalPrice = finalPrice * editedObject.amount;
+      }
     }
 
     editedObject.finalPrice = finalPrice;
@@ -296,6 +329,7 @@ const OutputInvoice = () => {
   const handleDeleteOutputInvoice = (e) => {
     dispatch(deleteOutputInvoice(outputInvoiceData));
     setIsEditedOutputInvoice(false);
+    setOutputInvoiceData(initialOutputInvoiceDataState)
     setOptionData(initialOutputInvoiceDataState);
   };
 
@@ -331,13 +365,18 @@ const OutputInvoice = () => {
         dispatch(createOutputInvoice(outputInvoiceData));
         setOutputInvoiceData(initialOutputInvoiceDataState);
       }
+
+      setOutputInvoiceData(initialOutputInvoiceDataState)
+      setOptionData(initialOutputInvoiceDataState);
+      notify("br", "success", notificationAlert);
     }
   };
 
   return (
     <>
+      {console.log(outputInvoices)}
+      <ReactNotificationAlert ref={notificationAlert} />
       <PanelHeader size="sm" />
-
       <div className="content">
         <Row>
           <Col md="12">
@@ -370,14 +409,14 @@ const OutputInvoice = () => {
                   <Row>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Service</label>
+                        <label>Usluga</label>
                         <br></br>
                         <select
                           name="serviceModel"
                           className="dropdownSelect"
                           onChange={handleChangeInput("serviceModel")}
                         >
-                          <option value="Select">Select</option>
+                          <option value="Select">Odaberi uslugu...</option>
                           {servicesData.map((service, index) => {
                             if (service.id === optionData.serviceId) {
                               return (
@@ -398,7 +437,7 @@ const OutputInvoice = () => {
                     </Col>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Invoice Type</label>
+                        <label>Tip računa</label>
                         <br />
                         <select
                           className="dropdownSelect"
@@ -432,14 +471,14 @@ const OutputInvoice = () => {
                     </Col>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Customer</label>
+                        <label>Kupac</label>
                         <br></br>
                         <select
                           name="customer"
                           className="dropdownSelect"
                           onChange={handleChangeInput("customer")}
                         >
-                          <option value="Select">Select</option>
+                          <option value="Select">Odaberi kupca...</option>
                           {customers.map((customer, index) => {
                             if (customer.id === optionData.customerId) {
                               return (
@@ -464,7 +503,7 @@ const OutputInvoice = () => {
                     </Col>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Invoice Number</label>
+                        <label>Broj računa</label>
                         <Input
                           placeholder="Invoice Number"
                           type="number"
@@ -476,14 +515,17 @@ const OutputInvoice = () => {
                       </FormGroup>
                     </Col>
                   </Row>
+                  <label>Stavke računa</label>
                   {outputInvoiceData.serviceDetails.map((detail, index) => {
                     return (
                       <div key={index}>
                         <div className="details-section">
+                          <Row>
                           <i
                             className="now-ui-icons ui-1_simple-remove"
                             style={{
                               float: "right",
+                              textAlign: "right",
                               color: "black",
                               fontWeight: "bold",
                               fontSize: "20px",
@@ -491,12 +533,15 @@ const OutputInvoice = () => {
                             }}
                             onClick={handleDeleteDetailsSection(index)}
                           />
+                          </Row>
                           <Row>
                             <Col className="pr-1" md="4">
                               <FormGroup>
-                                <label>Measure Unit</label>
+                                <label>Jed. mjera</label>
                                 <br />
                                 <select
+                                  id="selectisize"
+                                  
                                   className="dropdownSelect"
                                   required
                                   onChange={handleServiceDetailsChangeInput(
@@ -539,7 +584,7 @@ const OutputInvoice = () => {
                             </Col>
                             <Col className="pr-1" md="4">
                               <FormGroup>
-                                <label>Amount</label>
+                                <label>Količina</label>
                                 <Input
                                   placeholder="0"
                                   min={1}
@@ -558,7 +603,7 @@ const OutputInvoice = () => {
                             </Col>
                             <Col className="pr-1" md="4">
                               <FormGroup>
-                                <label>Price</label>
+                                <label>Cijena</label>
                                 <Input
                                   placeholder="0,00 kn"
                                   value={detail.price}
@@ -581,7 +626,7 @@ const OutputInvoice = () => {
                           <Row>
                             <Col className="pr-1" md="3">
                               <FormGroup>
-                                <label>Tax rate %</label>
+                                <label>Porez. stopa %</label>
                                 <Input
                                   placeholder="0%"
                                   value={
@@ -601,7 +646,7 @@ const OutputInvoice = () => {
                             </Col>
                             <Col className="pr-1" md="3">
                               <FormGroup>
-                                <label>Discount %</label>
+                                <label>Popust %</label>
                                 <Input
                                   placeholder="0%"
                                   value={detail.discount}
@@ -622,7 +667,7 @@ const OutputInvoice = () => {
                             <Row>
                               <Col className="pr-1" md="12">
                                 <FormGroup>
-                                  <label>Service description</label>
+                                  <label>Opis usluge/proizvoda</label>
                                   <textarea
                                     style={{
                                       width: "100%",
@@ -630,7 +675,7 @@ const OutputInvoice = () => {
                                       padding: "5px",
                                     }}
                                     rows="6"
-                                    placeholder="Service description"
+                                    placeholder="Opiši opis usluge ili proizvoda..."
                                     value={detail.serviceDescription}
                                     onChange={handleServiceDetailsChangeInput(
                                       detail.id,
@@ -663,14 +708,14 @@ const OutputInvoice = () => {
                   <Row>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Payment method</label>
+                        <label>Način plaćanja</label>
                         <br />
                         <select
                           className="dropdownSelect"
                           onChange={handleRootInput}
                           name="paymentMethod"
                         >
-                          <option value={paymentMethod}>Select</option>
+                          <option value={paymentMethod}>Odaberi način plaćanja...</option>
                           {paymentMethods.map((paymentMethod) => {
                             if (
                               paymentMethod.value === optionData.paymentMethod
@@ -712,7 +757,7 @@ const OutputInvoice = () => {
                     </Col>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Final price (kn)</label>
+                        <label>Ukupno (kn)</label>
                         <Input
                           disabled
                           type="number"
@@ -727,19 +772,19 @@ const OutputInvoice = () => {
                       {isEditedOutputInvoice ? (
                         <>
                           <Button variant="primary" type="submit">
-                            Update invoice
+                            Spremi izmjene
                           </Button>
                           <Button
                             variant="danger"
                             type="button"
-                            onClick={handleDeleteOutputInvoice}
+                            onClick={handleAction}
                           >
-                            Delete
+                            Obriši
                           </Button>
                         </>
                       ) : (
                         <Button variant="info" type="submit">
-                          Add new invoice
+                          Dodaj novi račun
                         </Button>
                       )}
                     </Col>
@@ -751,7 +796,7 @@ const OutputInvoice = () => {
           <Col xs={12}>
             <Card className="card-plain">
               <CardHeader>
-                <CardTitle tag="h4">Output invoices</CardTitle>
+                <CardTitle tag="h4">Izlazni računi</CardTitle>
               </CardHeader>
               <CardBody>
                 <Table responsive>
@@ -785,6 +830,13 @@ const OutputInvoice = () => {
             </Card>
           </Col>
         </Row>
+        {dialog.isLoading && (
+          <Dialog
+            nameProduct={dialog.nameProduct}
+            onDialog={handleConfirmation}
+            message={dialog.message}
+          />
+        )}
       </div>
     </>
   );

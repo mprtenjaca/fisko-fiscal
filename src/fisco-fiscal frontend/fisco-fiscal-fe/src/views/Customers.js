@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 // reactstrap components
 import {
@@ -26,11 +26,16 @@ import { updateCustomer } from "redux/actions/customerAction";
 import { createCustomer } from "redux/actions/customerAction";
 import { deleteCustomer } from "redux/actions/customerAction";
 
+import notify from "variables/notify";
+import Dialog from "components/FixedPlugin/CustomDialog";
+import ReactNotificationAlert from "react-notification-alert";
+
 const Customers = () => {
   const initialCustomerDataState = {
     user: null,
     firstName: "",
     lastName: "",
+    companyName: "",
     address: "",
     email: "",
     oib: "",
@@ -41,7 +46,12 @@ const Customers = () => {
     fax: "",
   };
 
-  const [isSubmit, setIsSubmit] = useState(false);
+  const [dialog, setDialog] = useState({
+    message: "",
+    isLoading: false
+  });
+  
+  const notificationAlert = useRef();
   const [isEditedCustomer, setIsEditedCustomer] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [customerData, setCustomerData] = useState(initialCustomerDataState);
@@ -52,6 +62,7 @@ const Customers = () => {
   const {
     firstName,
     lastName,
+    companyName,
     address,
     email,
     oib,
@@ -67,6 +78,30 @@ const Customers = () => {
     setCustomers(customersRed.customers);
   }, [customersRed.customers, customersRed.loading]);
 
+
+  // Confirmation dialog
+  const handleDialog = (message, isLoading) => {
+    setDialog({
+      message,
+      isLoading
+    });
+  };
+
+  const handleAction = (e) => {
+    handleDialog("Jeste li siguni da želite obrisati korisnika?", true);
+  };
+
+  const handleConfirmation = (choose, e) => {
+    console.log(e)
+    if (choose) {
+      //ACTION
+      handleDialog("", false);
+      handleDeleteCustomer(e);
+    } else {
+      handleDialog("", false);
+    }
+  };
+
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setCustomerData({ ...customerData, [name]: value });
@@ -79,7 +114,6 @@ const Customers = () => {
   };
 
   const handleDeleteCustomer = (e) => {
-    console.log(customerData);
     dispatch(deleteCustomer(customerData));
     setIsEditedCustomer(false);
     setCustomerData(initialCustomerDataState);
@@ -93,7 +127,6 @@ const Customers = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setFromErrors(customerValidation(customerData));
-    setIsSubmit(true);
 
     if (Object.keys(customerValidation(customerData)).length === 0) {
       if (isEditedCustomer) {
@@ -104,12 +137,15 @@ const Customers = () => {
         dispatch(createCustomer(customerData));
         setCustomerData(initialCustomerDataState);
       }
+
+      notify("br", "success", notificationAlert);
     }
+
   };
 
   return (
     <>
-      {console.log(customers)}
+      <ReactNotificationAlert ref={notificationAlert} />
       <PanelHeader size="sm" />
       <div className="content">
         <Row>
@@ -118,14 +154,14 @@ const Customers = () => {
               <CardHeader>
                 <Row>
                   <Col md="12" className="center-custom">
-                    <h5 className="title">Add Customer</h5>
+                    <h5 className="title">Kupci</h5>
                     {isEditedCustomer ? (
                       <Button
                         variant="info"
                         type="button"
                         onClick={handleNewCustomerAction}
                       >
-                        Add new
+                        Dodaj novog
                       </Button>
                     ) : (
                       <></>
@@ -138,35 +174,48 @@ const Customers = () => {
                   <Row>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>First Name</label>
+                        <label>Ime</label>
                         <Input
-                          placeholder="First name"
+                          placeholder="Ime"
                           type="text"
                           value={firstName}
                           onChange={handleChangeInput}
                           name="firstName"
                         />
-                        <p className="error">{formErrors.firstName}</p>
+                        {/* <p className="error">{formErrors.firstName}</p> */}
                       </FormGroup>
                     </Col>
                     <Col className="px-1" md="3">
                       <FormGroup>
-                        <label>Last Name</label>
+                        <label>Prezime</label>
                         <Input
-                          placeholder="Last name"
+                          placeholder="Prezime"
                           type="text"
                           onChange={handleChangeInput}
                           value={lastName}
                           name="lastName"
                         />
-                        <p className="error">{formErrors.lastName}</p>
+                        {/* <p className="error">{formErrors.lastName}</p> */}
                       </FormGroup>
                     </Col>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Email</label>
+                        <label>Firma</label>
                         <Input
-                          placeholder="Email"
+                          placeholder="Firma"
+                          type="text"
+                          value={companyName}
+                          onChange={handleChangeInput}
+                          name="companyName"
+                        />
+                        <p className="error">{formErrors.companyName}</p>
+                      </FormGroup>
+                    </Col>
+                    <Col className="pr-1" md="3">
+                      <FormGroup>
+                        <label>E-mail</label>
+                        <Input
+                          placeholder="E-mail"
                           type="email"
                           onChange={handleChangeInput}
                           value={email}
@@ -175,6 +224,8 @@ const Customers = () => {
                         <p className="error">{formErrors.email}</p>
                       </FormGroup>
                     </Col>
+                  </Row>
+                  <Row>
                     <Col className="pl-1" md="3">
                       <FormGroup>
                         <label>OIB</label>
@@ -188,8 +239,6 @@ const Customers = () => {
                         <p className="error">{formErrors.oib}</p>
                       </FormGroup>
                     </Col>
-                  </Row>
-                  <Row>
                     <Col className="pl-1" md="3">
                       <FormGroup>
                         <label htmlFor="exampleInputEmail1">Address</label>
@@ -205,9 +254,9 @@ const Customers = () => {
                     </Col>
                     <Col className="pl-1" md="3">
                       <FormGroup>
-                        <label>City</label>
+                        <label>Grad</label>
                         <Input
-                          placeholder="City"
+                          placeholder="Grad"
                           type="text"
                           onChange={handleChangeInput}
                           value={city}
@@ -218,9 +267,9 @@ const Customers = () => {
                     </Col>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Postal Code</label>
+                        <label>Poštanski broj</label>
                         <Input
-                          placeholder="Postal code"
+                          placeholder="Poštanski broj"
                           type="number"
                           onChange={handleChangeInput}
                           value={postalCode}
@@ -229,11 +278,14 @@ const Customers = () => {
                         <p className="error">{formErrors.postalCode}</p>
                       </FormGroup>
                     </Col>
+                    
+                  </Row>
+                  <Row>
                     <Col className="px-1" md="3">
                       <FormGroup>
-                        <label>Country</label>
+                        <label>Država</label>
                         <Input
-                          placeholder="Country"
+                          placeholder="Država"
                           type="text"
                           onChange={handleChangeInput}
                           value={country}
@@ -242,13 +294,11 @@ const Customers = () => {
                         <p className="error">{formErrors.country}</p>
                       </FormGroup>
                     </Col>
-                  </Row>
-                  <Row>
                     <Col className="pl-1" md="4">
                       <FormGroup>
-                        <label>Phone Number</label>
+                        <label>Mobitel</label>
                         <Input
-                          placeholder="Phone number"
+                          placeholder="Mobitel"
                           type="number"
                           onChange={handleChangeInput}
                           value={phoneNumber}
@@ -275,19 +325,19 @@ const Customers = () => {
                       {isEditedCustomer ? (
                         <>
                           <Button variant="primary" type="submit">
-                            Update customer
+                            Spremi promjene
                           </Button>
                           <Button
                             variant="danger"
                             type="button"
-                            onClick={handleDeleteCustomer}
+                            onClick={handleAction}
                           >
-                            Delete
+                            Obriši
                           </Button>
                         </>
                       ) : (
                         <Button variant="info" type="submit">
-                          Add new customer
+                          Dodaj novog klijenta
                         </Button>
                       )}
                     </Col>
@@ -339,6 +389,13 @@ const Customers = () => {
             </Card>
           </Col>
         </Row>
+        {dialog.isLoading && (
+        <Dialog
+          nameProduct={dialog.nameProduct}
+          onDialog={handleConfirmation}
+          message={dialog.message}
+        />
+        )}
       </div>
     </>
   );

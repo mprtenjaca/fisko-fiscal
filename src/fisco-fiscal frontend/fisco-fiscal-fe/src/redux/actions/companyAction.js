@@ -20,8 +20,6 @@ export const getCompany = (auth) => async (dispatch) => {
     dispatch({ type: GLOBALTYPES.ALERT, payload: true });
     const res = await axios.get("/api/company/admin/" + auth.user.id, config);
 
-    console.log(res.data)
-
     dispatch({
       type: COMPANY_TYPES.GET_COMPANY,
       payload: res.data,

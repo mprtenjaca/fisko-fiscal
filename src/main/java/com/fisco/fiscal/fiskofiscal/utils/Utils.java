@@ -9,6 +9,7 @@ public interface Utils {
                 customer.getId(),
                 customer.getFirstName(),
                 customer.getLastName(),
+                customer.getCompanyName(),
                 customer.getAddress(),
                 customer.getEmail(),
                 customer.getOib(),

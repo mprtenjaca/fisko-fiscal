@@ -35,8 +35,6 @@ const Login = () => {
 
 
   const [loginData, setLoginData] = useState(initialLoginState);
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
@@ -66,67 +64,6 @@ const Login = () => {
 
   return (
     <>
-      {/* {success ? (
-        <h1>You are logged in!</h1>
-      ) : (
-        <>
-          <p ref={errRef}>{errMsg}</p>
-
-          <PanelHeader size="sm" />
-          <div className="content">
-            <Row>
-              <Col md="12">
-                <Card>
-                  <CardHeader>Login</CardHeader>
-                  <CardBody className="all-icons">
-                    <Form onSubmit={handleSubmit} className="loginForm">
-                      <div className="marko">
-                        <Row>
-                          <Col className="pr-1" md="12">
-                            <FormGroup>
-                              <label>Email</label>
-                              <Input
-                                placeholder="Email"
-                                type="text"
-                                value={username}
-                                onChange={handleChangeInput}
-                                name="username"
-                              />
-                            </FormGroup>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col className="px-1" md="12">
-                            <FormGroup>
-                              <label>Password</label>
-                              <Input
-                                placeholder="Password"
-                                type="text"
-                                onChange={handleChangeInput}
-                                value={password}
-                                name="password"
-                                required
-                              />
-                            </FormGroup>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col md="3">
-                            <Button variant="info" type="submit">
-                              Add
-                            </Button>
-                          </Col>
-                        </Row>
-                      </div>
-                    </Form>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-          </div>
-        </>
-      )} */}
-      
       <div className="container-fluid vh-100">
         <div className="">
           <div className="rounded d-flex justify-content-center loginCenter">

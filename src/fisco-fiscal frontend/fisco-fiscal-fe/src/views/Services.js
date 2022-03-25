@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // reactstrap components
 import {
@@ -25,6 +25,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateService } from "redux/actions/serviceAction";
 import { createService } from "redux/actions/serviceAction";
 import { deleteService } from "redux/actions/serviceAction";
+import Dialog from "components/FixedPlugin/CustomDialog";
+import ReactNotificationAlert from "react-notification-alert";
+import notify from "variables/notify";
 
 const Services = () => {
   const { serviceRed, auth } = useSelector((state) => state);
@@ -34,6 +37,12 @@ const Services = () => {
     serviceName: "",
   };
 
+  const [dialog, setDialog] = useState({
+    message: "",
+    isLoading: false
+  });
+
+  const notificationAlert = useRef();
   const dispatch = useDispatch();
   const [isSubmit, setIsSubmit] = useState(false);
   const [isEditedService, setIsEditedService] = useState(false);
@@ -50,6 +59,29 @@ const Services = () => {
     console.log(serviceRed.services)
     setServices(serviceRed.services);
   }, [serviceRed.services]);
+
+   // Confirmation dialog
+   const handleDialog = (message, isLoading) => {
+    setDialog({
+      message,
+      isLoading
+    });
+  };
+
+  const handleAction = (e) => {
+    handleDialog("Jeste li siguni da želite obrisati uslugu br." + serviceData.serviceNumber + " ?" , true);
+  };
+
+  const handleConfirmation = (choose, e) => {
+    console.log(e)
+    if (choose) {
+      //ACTION
+      handleDialog("", false);
+      handleDeleteService(e);
+    } else {
+      handleDialog("", false);
+    }
+  };
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -87,11 +119,14 @@ const Services = () => {
         dispatch(createService(serviceData));
         setServiceData(initialServiceData);
       }
+
+      notify("br", "success", notificationAlert);
     }
   };
 
   return (
     <>
+      <ReactNotificationAlert ref={notificationAlert} />
       <PanelHeader size="sm" />
       <div className="content">
         <Row>
@@ -100,14 +135,14 @@ const Services = () => {
               <CardHeader>
                 <Row>
                   <Col md="12" className="center-custom">
-                    <h5 className="title">Add Service</h5>
+                    <h5 className="title">Dodaj uslugu</h5>
                     {isEditedService ? (
                       <Button
                         variant="info"
                         type="button"
                         onClick={handleNewServiceAction}
                       >
-                        Add new
+                        Nova usluga
                       </Button>
                     ) : (
                       <></>
@@ -120,9 +155,9 @@ const Services = () => {
                   <Row>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Service number</label>
+                        <label>Broj usluge</label>
                         <Input
-                          placeholder="Service number"
+                          placeholder="Broj usluge (1, 2, 3...)"
                           type="number"
                           value={serviceNumber}
                           onChange={handleChangeInput}
@@ -133,9 +168,9 @@ const Services = () => {
                     </Col>
                     <Col className="px-1" md="3">
                       <FormGroup>
-                        <label>Service name</label>
+                        <label>Ime usluge</label>
                         <Input
-                          placeholder="Service name..."
+                          placeholder="Ime usluge"
                           type="text"
                           onChange={handleChangeInput}
                           value={serviceName}
@@ -151,19 +186,19 @@ const Services = () => {
                       {isEditedService ? (
                         <>
                           <Button variant="primary" type="submit">
-                            Update service
+                            Spremi nove izmjene
                           </Button>
                           <Button
                             variant="danger"
                             type="button"
-                            onClick={handleDeleteService}
+                            onClick={handleAction}
                           >
-                            Delete
+                            Obriši
                           </Button>
                         </>
                       ) : (
                         <Button variant="info" type="submit">
-                          Add new service
+                          Dodaj novu uslugu
                         </Button>
                       )}
                     </Col>
@@ -201,6 +236,13 @@ const Services = () => {
             </Card>
           </Col>
         </Row>
+        {dialog.isLoading && (
+          <Dialog
+            nameProduct={dialog.nameProduct}
+            onDialog={handleConfirmation}
+            message={dialog.message}
+          />
+        )}
       </div>
     </>
   );

@@ -13,7 +13,7 @@ export const getOutputInvoices = (auth) => async (dispatch) => {
   const token = localStorage.getItem("tkn_fisco");
 
   const config = {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${auth.token}` },
   };
 
   try {

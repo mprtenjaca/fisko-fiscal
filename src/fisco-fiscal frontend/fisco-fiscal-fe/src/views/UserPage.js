@@ -13,12 +13,13 @@ import {
 } from "reactstrap";
 
 // core components
-import NotificationAlert from "react-notification-alert";
+import ReactNotificationAlert from "react-notification-alert";
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import Button from "react-bootstrap/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCompany } from "redux/actions/companyAction";
 import notify from "variables/notify";
+import Dialog from "components/FixedPlugin/CustomDialog";
 
 const User = () => {
   const initialUserDataState = {
@@ -44,6 +45,11 @@ const User = () => {
     customReference: "",
   };
 
+  const [dialog, setDialog] = useState({
+    message: "",
+    isLoading: false
+  });
+
   const notificationAlert = useRef();
   const [companyData, setCompanyData] = useState(initialCompanyDataState);
   const [userData, setUserData] = useState(initialUserDataState);
@@ -60,6 +66,27 @@ const User = () => {
     setCompanyData(companyRed.company);
     setUserData(auth.user);
   }, [auth.user, companyRed]);
+
+  const handleDialog = (message, isLoading) => {
+    setDialog({
+      message,
+      isLoading
+    });
+  };
+
+  const handleAction = (e) => {
+    handleDialog("Jeste li siguni da želite spremiti nove izmjene?", true);
+  };
+
+  const handleConfirmation = (choose) => {
+    if (choose) {
+      //ACTION
+      handleDialog("", false);
+    } else {
+      handleDialog("", false);
+    }
+  };
+
 
   const handleEnableComapnyEdit = (e) => {
     setIsCompanyDisabled(!isCompanyDisabled);
@@ -84,14 +111,13 @@ const User = () => {
 
   const handleComapnySubmit = (e) => {
     e.preventDefault();
-    console.log("TEST");
     dispatch(updateCompany(companyData));
     notify("br", "success", notificationAlert);
   };
 
   return (
     <>
-      <NotificationAlert ref={notificationAlert} />
+      <ReactNotificationAlert ref={notificationAlert} />
       <PanelHeader size="sm" />
       <div className="content">
         <Row>
@@ -369,7 +395,15 @@ const User = () => {
             </Card>
           </Col>
         </Row>
+        {dialog.isLoading && (
+          <Dialog
+            nameProduct={dialog.nameProduct}
+            onDialog={handleConfirmation}
+            message={dialog.message}
+          />
+        )}
       </div>
+      
     </>
   );
 };

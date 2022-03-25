@@ -3,10 +3,11 @@ package com.fisco.fiscal.fiskofiscal.enums;
 import lombok.AllArgsConstructor;
 
 public enum PaymentMethod {
-    CASH("CASH"),
-    CARD("CARD"),
-    CHECK("CHECK"),
-    OTHER("OTHER");
+    GOTOVINA("GOTOVINA"),
+    KARTICA("KARTICA"),
+    TRANSAKCIJSKI("TRANSAKCIJSKI RAČUN"),
+    ČEK("ČEK"),
+    OSTALO("OSTALO");
 
     private String value;
 

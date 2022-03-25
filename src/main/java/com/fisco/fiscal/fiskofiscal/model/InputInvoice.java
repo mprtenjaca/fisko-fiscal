@@ -29,20 +29,25 @@ public class InputInvoice {
     private Long id;
     private String expenseType;
 
-    private String invoiceIssuer;
+    private String issuer;
+    private String city;
     private String streetAddress;
     private String streetNumber;
     private String postalCode;
     private String oib;
     private String description;
+    private String reference;
     private BigDecimal taxRate;
+    private BigDecimal pretax;
     private BigDecimal price;
     private BigDecimal finalPrice;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", shape = JsonFormat.Shape.STRING)
-    private LocalDateTime dateAndTime;
+    private LocalDateTime invoiceDateAndTime;
+    @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
+    private LocalDate paymentDeadline;
     @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
     private LocalDate deliveryDate;
 
