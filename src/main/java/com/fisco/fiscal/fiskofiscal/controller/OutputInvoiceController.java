@@ -1,14 +1,11 @@
 package com.fisco.fiscal.fiskofiscal.controller;
 
-import com.fisco.fiscal.fiskofiscal.dto.CustomerDTO;
 import com.fisco.fiscal.fiskofiscal.model.Customer;
 import com.fisco.fiscal.fiskofiscal.model.OutputInvoice;
-import com.fisco.fiscal.fiskofiscal.model.ServiceDetails;
 import com.fisco.fiscal.fiskofiscal.model.ServiceModel;
 import com.fisco.fiscal.fiskofiscal.model.User;
 import com.fisco.fiscal.fiskofiscal.service.CustomerService;
 import com.fisco.fiscal.fiskofiscal.service.OutputInvoiceService;
-import com.fisco.fiscal.fiskofiscal.service.ServiceDetailsService;
 import com.fisco.fiscal.fiskofiscal.service.ServiceModelService;
 import com.fisco.fiscal.fiskofiscal.service.UserService;
 import lombok.AllArgsConstructor;
@@ -19,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +28,10 @@ public class OutputInvoiceController {
 
     private static final Logger log = LoggerFactory.getLogger(OutputInvoiceController.class);
 
-    private OutputInvoiceService outputInvoiceService;
-    private CustomerService customerService;
-    private ServiceModelService serviceModelService;
-    private ServiceDetailsService serviceDetailsService;
-    private UserService userService;
+    private final OutputInvoiceService outputInvoiceService;
+    private final CustomerService customerService;
+    private final ServiceModelService serviceModelService;
+    private final UserService userService;
 
     @GetMapping
     public List<OutputInvoice> getOutputInvoices(){
@@ -46,10 +41,10 @@ public class OutputInvoiceController {
     @GetMapping("/{id}")
     public ResponseEntity<OutputInvoice> getOutputInvoiceById(@PathVariable("id") final Long id){
        Optional<OutputInvoice> optionalOutputInvoice = outputInvoiceService.getOutputInvoiceById(id);
-       if(optionalOutputInvoice.isPresent())
-           return new ResponseEntity<>(optionalOutputInvoice.get(), HttpStatus.OK);
+        return optionalOutputInvoice
+                .map(outputInvoice -> new ResponseEntity<>(outputInvoice, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
 
-       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/admin/{id}")
@@ -62,8 +57,7 @@ public class OutputInvoiceController {
         if(outputInvoice.getCustomer() != null){
             if(outputInvoice.getCustomer().getId() != null) {
                 Optional<Customer> customer = customerService.getById(outputInvoice.getCustomer().getId());
-                if (customer.isPresent())
-                    outputInvoice.setCustomer(customer.get());
+                customer.ifPresent(outputInvoice::setCustomer);
             }else{
                 customerService.save(outputInvoice.getCustomer());
             }
@@ -72,8 +66,7 @@ public class OutputInvoiceController {
         if(outputInvoice.getServiceModel() != null){
             if(outputInvoice.getServiceModel().getId() != null) {
                 Optional<ServiceModel> serviceModel = serviceModelService.getById(outputInvoice.getServiceModel().getId());
-                if (serviceModel.isPresent())
-                    outputInvoice.setServiceModel(serviceModel.get());
+                serviceModel.ifPresent(outputInvoice::setServiceModel);
             }else{
                 serviceModelService.save(outputInvoice.getServiceModel());
             }
@@ -90,7 +83,7 @@ public class OutputInvoiceController {
         Optional<ServiceModel> serviceModel = serviceModelService.getById(outputInvoice.getServiceModel().getId());
         Optional<User> user = userService.getUserById(outputInvoice.getUser().getId());
 
-        outputInvoice.setUser(user.get());
+        outputInvoice.setUser(userService.getUserById(outputInvoice.getUser().getId()).orElseGet(null));
         outputInvoice.setCustomer(customer.get());
         outputInvoice.setServiceModel(serviceModel.get());
         outputInvoice.setServiceModel(serviceModel.get());
@@ -98,10 +91,10 @@ public class OutputInvoiceController {
         OutputInvoice outputInvoiceNew = outputInvoiceService.save(outputInvoice);
         Optional<OutputInvoice> outputInvoiceOptional = outputInvoiceService.update(id, outputInvoiceNew);
 
-        if(outputInvoiceOptional.isPresent())
-            return new ResponseEntity<>(outputInvoiceOptional.get(), HttpStatus.OK);
+        return outputInvoiceOptional
+                .map(invoice -> new ResponseEntity<>(invoice, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
 
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -110,7 +103,7 @@ public class OutputInvoiceController {
         try {
             outputInvoiceService.delete(id);
         }catch (EmptyResultDataAccessException e){
-            log.error("Error while trying to delete OutputInvoice by ID", e.getMessage());
+            log.error("Error while trying to delete OutputInvoice by ID {}", e.getMessage());
         }
     }
 

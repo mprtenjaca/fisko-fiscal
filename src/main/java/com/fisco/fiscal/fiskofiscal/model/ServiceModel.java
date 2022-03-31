@@ -46,7 +46,6 @@ public class ServiceModel implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    //@JsonIgnore
     //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIgnore
     @OneToMany(mappedBy = "serviceModel", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
