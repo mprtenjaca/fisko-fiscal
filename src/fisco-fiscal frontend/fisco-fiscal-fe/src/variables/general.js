@@ -69,10 +69,11 @@ const tbody = [
 ];
 
 const oInvoiceHead = ["Broj računa", "Kupac", "Cijena", "Datum računa", "Rok plaćanja"]
+const oInputInvoiceHead = ["Izdavatelj računa", "Način plaćanja", "Datum računa", "Datum uplate"]
 const customersHead = ["Ime i prezime", "Adresa", "Kontakt", "OIB"]
 const servicesHead = ["Broj usluge", "Ime usluge"]
 
 // tasks list for Tasks card in Dashboard view
 // data for <thead> of table in TableList view
 // data for <tbody> of table in TableList view
-export { tasks, thead, tbody, oInvoiceHead, customersHead, servicesHead };
+export { tasks, thead, tbody, oInvoiceHead, customersHead, servicesHead, oInputInvoiceHead };

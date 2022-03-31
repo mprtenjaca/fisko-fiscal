@@ -160,7 +160,6 @@ const OutputInvoice = () => {
   ];
 
   useEffect(() => {
-
     setOutputInvoiceData({
       ...outputInvoiceData,
       user: auth.user,
@@ -324,13 +323,25 @@ const OutputInvoice = () => {
       invoiceType: data.invoiceType,
       paymentMethod: data.paymentMethod,
     });
+
+    setTimeout(function () {
+      console.log("test")
+      window.scrollTo(0, 300);
+  },2);
+    //document.querySelector("content").scrollTo(0,0);
   };
 
   const handleDeleteOutputInvoice = (e) => {
     dispatch(deleteOutputInvoice(outputInvoiceData));
     setIsEditedOutputInvoice(false);
     setOutputInvoiceData(initialOutputInvoiceDataState)
-    setOptionData(initialOutputInvoiceDataState);
+    setOptionData({
+      ...optionData,
+      customerId: "",
+      serviceId: "",
+      invoiceType: "",
+      measureUnit: "",
+    });
   };
 
   const handleNewOutputInvoiceAction = (e) => {
@@ -367,7 +378,7 @@ const OutputInvoice = () => {
       }
 
       setOutputInvoiceData(initialOutputInvoiceDataState)
-      setOptionData(initialOutputInvoiceDataState);
+      setOptionData("");
       notify("br", "success", notificationAlert);
     }
   };

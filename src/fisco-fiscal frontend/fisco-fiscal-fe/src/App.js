@@ -13,6 +13,7 @@ import Login from "views/Login";
 import { getOutputInvoices } from "redux/actions/outputInvoiceAction";
 import { getServices } from "redux/actions/serviceAction";
 import { getCompany } from "redux/actions/companyAction";
+import { getInputInvoices } from "redux/actions/inputInvoiceAction";
 
 const App = () => {
   const { auth } = useSelector((state) => state);
@@ -27,6 +28,7 @@ const App = () => {
     if (auth.token) {
       dispatch(getCustomers(auth));
       dispatch(getOutputInvoices(auth));
+      dispatch(getInputInvoices(auth));
       dispatch(getServices(auth));
       dispatch(getCompany(auth));
     }

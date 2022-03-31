@@ -74,7 +74,7 @@ export const customerValidation = (values) => {
       if (!value.measureUnit) {
         errors.measureUnit = "Measure unit is required!";
       }
-      if (value.amount <= 0) {
+      if (!value.amount) {
         errors.amount = "Amount is required!";
       }else if(value.amount <= 0){
         errors.priamountce = "Amount must be greater than 0";
@@ -84,17 +84,17 @@ export const customerValidation = (values) => {
       }else if(value.price <= 0){
         errors.price = "Price must be greater than 0";
       }
-      if (!value.discount) {
-        errors.discount = "Discount is required!";
-      }
-      if (!value.taxRate) {
-        errors.taxRate = "Tax rate is required!";
-      }else if(value.taxRate  <= 0){
-        errors.taxRate = "Tax rate must be greater than 0";
-      }
-      if (!value.serviceDescription) {
-        errors.serviceDescription = "Service description is required!";
-      }
+      // if (!value.discount) {
+      //   errors.discount = "Discount is required!";
+      // }
+      // if (!value.taxRate) {
+      //   errors.taxRate = "Tax rate is required!";
+      // }else if(value.taxRate  <= 0){
+      //   errors.taxRate = "Tax rate must be greater than 0";
+      // }
+      // if (!value.serviceDescription) {
+      //   errors.serviceDescription = "Service description is required!";
+      // }
     })
 
     return errors;
@@ -110,6 +110,42 @@ export const customerValidation = (values) => {
       errors.serviceNumber = "Service number is required!";
     }else if(values.serviceNumber === 0){
       errors.serviceNumber = "Service number be greater than 0";
+    }
+
+    return errors;
+  };
+
+  export const inputInvoiceValidation = (values) => {
+    const errors = {};
+    
+    if (!values.issuer) {
+      errors.issuer = "Ovo polje je obavezno!";
+    }
+    if (values.oib.length < 11 || values.oib.length > 11) {
+      errors.oib = "OIB treba sadržavati 11 znamenki";
+    }
+    if(!values.city){
+      errors.city = "Mjesto je obavezno polje";
+    }
+    if(!values.streetAddress){
+      errors.streetAddress = "Adresa je obavezno polje";
+    }
+    if(!values.streetNumber){
+      errors.streetNumber = "Kućni broj je obavezan";
+    }
+    if(!values.postalCode){
+      errors.postalCode = "Poštanski broj je obavezan";
+    }else if(values.postalCode.length < 5 || values.postalCode.length > 5){
+      errors.postalCode = "Poštanski mora sadržavati 5 znakova";
+    }
+    if(!values.description){
+      errors.description = "Opis (svrha) plaćanja je obavezan";
+    }
+    if(!values.price){
+      errors.price = "Iznos računa je obavezan";
+    }
+    if(!values.paymentMethod){
+      errors.paymentMethod = "Način plaćanja je obavezno polje";
     }
 
     return errors;

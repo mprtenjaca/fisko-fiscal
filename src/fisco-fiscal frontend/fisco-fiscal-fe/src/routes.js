@@ -8,6 +8,7 @@ import Upgrade from "views/Upgrade.js";
 import UserPage from "views/UserPage.js";
 import Customers from "views/Customers";
 import OutputInvoice from "views/OutputInvoice";
+import InputInvoice from "views/InputInvoice";
 import Services from "views/Services";
 
 var dashRoutes = [
@@ -58,6 +59,13 @@ var dashRoutes = [
     name: "Output Invoice",
     icon: "files_paper",
     component: OutputInvoice,
+    layout: "/admin",
+  },
+  {
+    path: "/input-invoice",
+    name: "Input Invoice",
+    icon: "files_single-copy-04",
+    component: InputInvoice,
     layout: "/admin",
   },
   {
