@@ -57,10 +57,6 @@ public class ServiceDetails {
 //    @JoinColumn(name = "output_invoice_id", referencedColumnName = "id")
 //    private OutputInvoice outputInvoice;
 
-    @OneToOne(mappedBy = "serviceDetails", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Offer offer;
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

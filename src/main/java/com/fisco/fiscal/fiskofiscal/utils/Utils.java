@@ -17,7 +17,8 @@ public interface Utils {
                 customer.getPostalCode(),
                 customer.getCountry(),
                 customer.getPhoneNumber(),
-                customer.getFax()
+                customer.getFax(),
+                customer.getCreatedAt()
         );
     }
 }

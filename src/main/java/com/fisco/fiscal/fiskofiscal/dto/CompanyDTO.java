@@ -19,6 +19,7 @@ public class CompanyDTO {
     private String postalCode;
     private String phoneNumber;
     private Integer taxRate;
+    private Boolean isVATsystem;
     private String reference;
     private String website;
     private String customReference;

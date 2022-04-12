@@ -51,6 +51,7 @@ public class ServiceModel implements Serializable {
     @OneToMany(mappedBy = "serviceModel", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<OutputInvoice> outputInvoices = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "serviceModel", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Offer> offers = new HashSet<>();
 }

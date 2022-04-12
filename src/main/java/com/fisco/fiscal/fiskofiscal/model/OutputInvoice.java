@@ -34,41 +34,28 @@ import java.util.Set;
 @Setter
 @RequiredArgsConstructor
 @Table(name = "output_invoices")
-public class OutputInvoice {
+public class OutputInvoice extends GenericModel{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Integer invoiceNumber;
     @Enumerated(EnumType.STRING)
     private InvoiceType invoiceType;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "service_model_id", referencedColumnName = "id")
     private ServiceModel serviceModel;
-
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
-
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "service_details_id", referencedColumnName = "id")
-//    private ServiceDetails serviceDetails;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<ServiceDetails> serviceDetails = new HashSet<>();
-
-
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
-
     private BigDecimal finalPrice;
-
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", shape = JsonFormat.Shape.STRING)

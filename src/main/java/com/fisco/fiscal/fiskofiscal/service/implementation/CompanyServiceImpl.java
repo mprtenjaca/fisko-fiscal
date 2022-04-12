@@ -56,6 +56,7 @@ public class CompanyServiceImpl implements CompanyService {
                 "postal_code = ?, " +
                 "phone_number = ?, " +
                 "tax_rate = ?, " +
+                "isvatsystem = ?, " +
                 "reference = ?, " +
                 "website = ?, " +
                 "custom_reference = ? " +
@@ -70,6 +71,7 @@ public class CompanyServiceImpl implements CompanyService {
                 company.getPostalCode(),
                 company.getPhoneNumber(),
                 company.getTaxRate(),
+                company.getIsVATsystem(),
                 company.getReference(),
                 company.getWebsite(),
                 company.getCustomReference(),
@@ -94,6 +96,7 @@ public class CompanyServiceImpl implements CompanyService {
                 company.getPostalCode(),
                 company.getPhoneNumber(),
                 company.getTaxRate(),
+                company.getIsVATsystem(),
                 company.getReference(),
                 company.getWebsite(),
                 company.getCustomReference()

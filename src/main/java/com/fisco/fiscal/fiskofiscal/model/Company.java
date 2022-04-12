@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,6 +36,8 @@ public class Company {
     private String postalCode;
     private String phoneNumber;
     private Integer taxRate;
+    @Column(columnDefinition="boolean default false")
+    private Boolean isVATsystem;
     private String reference;
     private String website;
     private String customReference;

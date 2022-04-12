@@ -1,11 +1,18 @@
 package com.fisco.fiscal.fiskofiscal.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
 public class CustomerDTO {
 
@@ -21,21 +28,6 @@ public class CustomerDTO {
     private String country;
     private String phoneNumber;
     private String fax;
-
-    public CustomerDTO(Long id, String firstName, String lastName, String companyName, String address, String email, String oib, String city, String postalCode, String country, String phoneNumber, String fax) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.companyName = companyName;
-        this.address = address;
-        this.email = email;
-        this.oib = oib;
-        this.city = city;
-        this.postalCode = postalCode;
-        this.country = country;
-        this.phoneNumber = phoneNumber;
-        this.fax = fax;
-    }
-
+    private Date createdAt;
 
 }
