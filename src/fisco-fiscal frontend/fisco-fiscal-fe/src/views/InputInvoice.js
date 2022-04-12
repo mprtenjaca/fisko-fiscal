@@ -130,6 +130,8 @@ const InputInvoice = () => {
       ...optionData,
       paymentMethod: data.paymentMethod
     });
+
+    document.getElementById("editAnchor").scrollIntoView();
   };
 
   const handleNewOutputInvoiceAction = (e) => {
@@ -190,8 +192,12 @@ const InputInvoice = () => {
     if (Object.keys(inputInvoiceValidation(inputInvoiceData)).length === 0) {
       dispatch(createInputInvoice(inputInvoiceData));
       setInputInvoiceData(initialInputInvoiceDataState);
-      setOptionData("");
       notify("br", "success", notificationAlert);
+
+      setOptionData({
+        ...optionData,
+        measureUnit: "",
+      });
     }
   };
 
@@ -207,7 +213,7 @@ const InputInvoice = () => {
               <CardHeader>
                 <Row>
                   <Col md="12" className="center-custom">
-                    <h5 className="title">Izlazni računi</h5>
+                    <h5 className="title" id="editAnchor">Izlazni računi</h5>
                     {isEditedInputInvoice ? (
                       <>
                         <Button
@@ -367,7 +373,7 @@ const InputInvoice = () => {
                     </Col>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Iznos računa</label>
+                        <label>Iznos računa (kn)</label>
                         <Input
                           placeholder="0 kn"
                           type="number"
@@ -437,7 +443,7 @@ const InputInvoice = () => {
                           type="date"
                           value={paymentDeadline}
                           onChange={handleChangeInput}
-                          name="invoiceDateAndTime"
+                          name="paymentDeadline"
                         />
                       </FormGroup>
                     </Col>
@@ -518,11 +524,12 @@ const InputInvoice = () => {
                         <tr
                           key={data.id}
                           onClick={handleOutputInvoiceEdit(data)}
+                          style={{cursor: "pointer"}}
                         >
                           <td>{data.issuer}</td>
                           <td>{data.paymentMethod}</td>
                           <td>{data.invoiceDate}</td>
-                          <td>{data.paymentDeadline}</td>
+                          <td>{data.paymentDate}</td>
                         </tr>
                       );
                     })}

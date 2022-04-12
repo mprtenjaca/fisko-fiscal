@@ -28,12 +28,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateOutputInvoice } from "redux/actions/outputInvoiceAction";
 import { createOutputInvoice } from "redux/actions/outputInvoiceAction";
 import { deleteOutputInvoice } from "redux/actions/outputInvoiceAction";
+import { invoiceTypes, measureUnits, paymentMethods } from "components/Util/Util";
 import { useHistory } from "react-router-dom";
 import Dialog from "components/FixedPlugin/CustomDialog";
 import ReactNotificationAlert from "react-notification-alert";
 import notify from "variables/notify";
+import { handleFinalPriceValue } from "components/Util/Util";
+
+
 
 const OutputInvoice = () => {
+
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { outputInvoiceRed, customersRed, serviceRed, companyRed, auth } =
+    useSelector((state) => state);
+
+  const [dialog, setDialog] = useState({
+    message: "",
+    isLoading: false,
+  });
+
   const [formErrors, setFromErrors] = useState({
     invoiceNumber: "",
     invoiceType: "",
@@ -69,7 +84,7 @@ const OutputInvoice = () => {
   });
 
   const initialOutputInvoiceDataState = {
-    user: null,
+    user: auth.user,
     invoiceNumber: 0,
     invoiceType: "",
     customer: null,
@@ -91,18 +106,8 @@ const OutputInvoice = () => {
     deliveryDate: "2022-07-18",
   };
 
-  const dispatch = useDispatch();
-  const history = useHistory();
-  const { outputInvoiceRed, customersRed, serviceRed, companyRed, auth } = useSelector(
-    (state) => state
-  );
-
-  const [dialog, setDialog] = useState({
-    message: "",
-    isLoading: false
-  });
-
   const notificationAlert = useRef();
+  const mainRef = useRef();
   const [isEditedOutputInvoice, setIsEditedOutputInvoice] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [companyData, setCompanyData] = useState({});
@@ -124,73 +129,38 @@ const OutputInvoice = () => {
     deliveryDate,
   } = outputInvoiceData;
 
-  const ivoiceTypes = [
-    { value: "R" },
-    { value: "R1" },
-    { value: "R2" },
-    { value: "AVANSNI" },
-    { value: "OSTALO" },
-  ];
-
-  const measureUnits = [
-    { value: "KOM" },
-    { value: "SAT" },
-    { value: "GOD" },
-    { value: "KM" },
-    { value: "LIT" },
-    { value: "KG" },
-    { value: "KWH" },
-    { value: "M" },
-    { value: "M2" },
-    { value: "M3" },
-    { value: "T" },
-    { value: "G" },
-    { value: "DAN" },
-    { value: "MJ" },
-    { value: "NOĆ" },
-    { value: "PAR" },
-    { value: "SOBA" },
-  ];
-
-  const paymentMethods = [
-    { value: "GOTOVINA" },
-    { value: "KARTICA" },
-    { value: "ČEK" },
-    { value: "OSTALO" },
-  ];
-
   useEffect(() => {
-    setOutputInvoiceData({
-      ...outputInvoiceData,
-      user: auth.user,
-    });
     setOutputInvoices(outputInvoiceRed.outputInvoices);
     setCustomers(customersRed.customers);
     setServicesData(serviceRed.services);
   }, [outputInvoiceRed.outputInvoices]);
 
-    // Confirmation dialog
-    const handleDialog = (message, isLoading) => {
-      setDialog({
-        message,
-        isLoading
-      });
-    };
-  
-    const handleAction = (e) => {
-      handleDialog("Jeste li siguni da želite obrisati račun br." + outputInvoiceData.invoiceNumber , true);
-    };
-  
-    const handleConfirmation = (choose, e) => {
-      console.log(e)
-      if (choose) {
-        //ACTION
-        handleDialog("", false);
-        handleDeleteOutputInvoice(e);
-      } else {
-        handleDialog("", false);
-      }
-    };
+  // Confirmation dialog
+  const handleDialog = (message, isLoading) => {
+    setDialog({
+      message,
+      isLoading,
+    });
+  };
+
+  const handleAction = (e) => {
+    handleDialog(
+      "Jeste li siguni da želite obrisati račun br." +
+        outputInvoiceData.invoiceNumber,
+      true
+    );
+  };
+
+  const handleConfirmation = (choose, e) => {
+    console.log(e);
+    if (choose) {
+      //ACTION
+      handleDialog("", false);
+      handleDeleteOutputInvoice(e);
+    } else {
+      handleDialog("", false);
+    }
+  };
 
   const handleAddDetailsSection = (e) => {
     setOutputInvoiceData({
@@ -202,7 +172,7 @@ const OutputInvoice = () => {
   const handleViewPDF = () => {
     history.push({
       pathname: "/admin/pdf",
-      state: { invoice: outputInvoiceData},
+      state: { invoice: outputInvoiceData },
     });
   };
 
@@ -226,54 +196,21 @@ const OutputInvoice = () => {
   };
 
   const handleFinalPrice = (index) => {
-    let finalPrice = 0;
+    //let finalPrice = 0;
     let editedList = outputInvoiceData.serviceDetails;
     let editedObject = editedList[index];
-
-    if (editedObject.price) {
-      if (editedObject.taxRate > 0) {
-        let tax = (editedObject.taxRate / 100) * editedObject.price;
-        finalPrice = editedObject.price + tax;
-      }
-
-      if (editedObject.taxRate > 0 && editedObject.discount > 0) {
-        let disc = (editedObject.discount / 100) * finalPrice;
-        finalPrice = finalPrice - disc;
-      }
-
-      if ((!editedObject.taxRate || editedObject.taxRate <= 0) && editedObject.discount > 0) {
-        let disc = (editedObject.discount / 100) * editedObject.price;
-        finalPrice = editedObject.price - disc;
-      }
-
-      if ((!editedObject.taxRate && !editedObject.discount) || (editedObject.taxRate <= 0 && editedObject.discount <= 0)) {
-        finalPrice = editedObject.price;
-      }
-
-      if(!editedObject.taxRate){
-        editedObject.taxRate = ""
-      }
-      if(!editedObject.discount){
-        editedObject.discount = ""
-      }
-
-      if (editedObject.amount > 1){
-        finalPrice = finalPrice * editedObject.amount;
-      }
-    }
+    let finalPrice = handleFinalPriceValue(editedList, index)
 
     editedObject.finalPrice = finalPrice;
     setOutputInvoiceData({
       ...outputInvoiceData,
       serviceDetails: editedList,
-      finalPrice: outputInvoiceData.serviceDetails.reduce(
-        (a, v) => (a = a + v.finalPrice),
-        0
-      ),
+      finalPrice: outputInvoiceData.serviceDetails.reduce((a, v) => (a = a + v.finalPrice), 0),
     });
   };
 
   const handleDeleteDetailsSection = (idx) => (e) => {
+
     let updatedList = outputInvoiceData.serviceDetails.filter((item, index) => {
       if (index != idx) return item;
     });
@@ -312,7 +249,6 @@ const OutputInvoice = () => {
   };
 
   const handleOutputInvoiceEdit = (data) => (e) => {
-    console.log(data);
     setOutputInvoiceData(data);
     setIsEditedOutputInvoice(true);
 
@@ -324,17 +260,14 @@ const OutputInvoice = () => {
       paymentMethod: data.paymentMethod,
     });
 
-    setTimeout(function () {
-      console.log("test")
-      window.scrollTo(0, 300);
-  },2);
-    //document.querySelector("content").scrollTo(0,0);
+    document.getElementById("editAnchor").scrollIntoView();
+
   };
 
   const handleDeleteOutputInvoice = (e) => {
     dispatch(deleteOutputInvoice(outputInvoiceData));
     setIsEditedOutputInvoice(false);
-    setOutputInvoiceData(initialOutputInvoiceDataState)
+    setOutputInvoiceData(initialOutputInvoiceDataState);
     setOptionData({
       ...optionData,
       customerId: "",
@@ -377,7 +310,7 @@ const OutputInvoice = () => {
         setOutputInvoiceData(initialOutputInvoiceDataState);
       }
 
-      setOutputInvoiceData(initialOutputInvoiceDataState)
+      setOutputInvoiceData(initialOutputInvoiceDataState);
       setOptionData("");
       notify("br", "success", notificationAlert);
     }
@@ -385,17 +318,17 @@ const OutputInvoice = () => {
 
   return (
     <>
-      {console.log(outputInvoices)}
-      <ReactNotificationAlert ref={notificationAlert} />
+      {console.log(outputInvoiceData)}
+      <ReactNotificationAlert  ref={notificationAlert}/>
       <PanelHeader size="sm" />
-      <div className="content">
+      <div className="content" >
         <Row>
           <Col md="12">
             <Card>
               <CardHeader>
-                <Row>
+                <Row >
                   <Col md="12" className="center-custom">
-                    <h5 className="title">Output Invoice</h5>
+                    <h5 className="title" id="editAnchor" ref={mainRef}>Izlazni račun</h5>
                     {isEditedOutputInvoice ? (
                       <>
                         <Button
@@ -458,7 +391,7 @@ const OutputInvoice = () => {
                           <option value={outputInvoiceData.invoiceType}>
                             Select
                           </option>
-                          {ivoiceTypes.map((invoice) => {
+                          {invoiceTypes.map((invoice) => {
                             if (invoice.value === optionData.invoiceType) {
                               return (
                                 <option
@@ -531,19 +464,23 @@ const OutputInvoice = () => {
                     return (
                       <div key={index}>
                         <div className="details-section">
-                          <Row>
-                          <i
-                            className="now-ui-icons ui-1_simple-remove"
-                            style={{
-                              float: "right",
-                              textAlign: "right",
-                              color: "black",
-                              fontWeight: "bold",
-                              fontSize: "20px",
-                              cursor: "pointer",
-                            }}
-                            onClick={handleDeleteDetailsSection(index)}
-                          />
+                          <Row className="details-section-row-x">
+                            {index > 0 ?
+                              <div className="details-section-x">
+                                <i
+                                  className="now-ui-icons ui-1_simple-remove"
+                                  style={{
+                                    textAlign: "right",
+                                    color: "black",
+                                    fontWeight: "bold",
+                                    fontSize: "20px",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={handleDeleteDetailsSection(index)}
+                                />
+                              </div>
+                              : <></>
+                            }
                           </Row>
                           <Row>
                             <Col className="pr-1" md="4">
@@ -552,7 +489,6 @@ const OutputInvoice = () => {
                                 <br />
                                 <select
                                   id="selectisize"
-                                  
                                   className="dropdownSelect"
                                   required
                                   onChange={handleServiceDetailsChangeInput(
@@ -726,7 +662,9 @@ const OutputInvoice = () => {
                           onChange={handleRootInput}
                           name="paymentMethod"
                         >
-                          <option value={paymentMethod}>Odaberi način plaćanja...</option>
+                          <option value={paymentMethod}>
+                            Odaberi način plaćanja...
+                          </option>
                           {paymentMethods.map((paymentMethod) => {
                             if (
                               paymentMethod.value === optionData.paymentMethod
@@ -768,13 +706,14 @@ const OutputInvoice = () => {
                     </Col>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Ukupno (kn)</label>
-                        <Input
+                        <label>Ukupno</label>
+                        <h3>{finalPrice} kn</h3>
+                        {/* <Input
                           disabled
                           type="number"
                           value={finalPrice}
                           name="finalPrice"
-                        />
+                        /> */}
                       </FormGroup>
                     </Col>
                   </Row>
@@ -807,7 +746,7 @@ const OutputInvoice = () => {
           <Col xs={12}>
             <Card className="card-plain">
               <CardHeader>
-                <CardTitle tag="h4">Izlazni računi</CardTitle>
+                {/* <CardTitle tag="h4">Izlazni računi</CardTitle> */}
               </CardHeader>
               <CardBody>
                 <Table responsive>
@@ -824,6 +763,7 @@ const OutputInvoice = () => {
                         <tr
                           key={data.id}
                           onClick={handleOutputInvoiceEdit(data)}
+                          style={{cursor: "pointer"}}
                         >
                           <td>{data.invoiceNumber}</td>
                           <td>

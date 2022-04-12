@@ -41,10 +41,6 @@ function Admin(props) {
     mainPanel.current.scrollTop = 0;
   }, [location]);
 
-  const handleColorClick = (color) => {
-    setBackgroundColor(color);
-  };
-
   return (
     <div className="wrapper">
       <Sidebar {...props} routes={routes} backgroundColor={backgroundColor} />

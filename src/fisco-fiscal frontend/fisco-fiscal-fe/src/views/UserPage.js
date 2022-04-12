@@ -40,6 +40,7 @@ const User = () => {
     postalCode: "",
     phoneNumber: "",
     taxRate: 0,
+    isVATsystem: false,
     reference: "",
     website: "",
     customReference: "",
@@ -65,7 +66,7 @@ const User = () => {
     setCompanyData({ ...companyData, user: auth.user });
     setCompanyData(companyRed.company);
     setUserData(auth.user);
-  }, [auth.user, companyRed]);
+  }, [auth.user, companyRed.company]);
 
   const handleDialog = (message, isLoading) => {
     setDialog({
@@ -99,8 +100,13 @@ const User = () => {
   };
 
   const handleCompanyChangeInput = (e) => {
-    const { name, value } = e.target;
-    setCompanyData({ ...companyData, [name]: value });
+  
+    const { name, value, checked } = e.target;
+    if(e.target.name === "isVATsystem"){
+      setCompanyData({ ...companyData, [name]: checked});
+    }else{
+      setCompanyData({ ...companyData, [name]: value });
+    }
     console.log(companyData);
   };
 
@@ -117,6 +123,7 @@ const User = () => {
 
   return (
     <>
+      {/* {console.log(companyRed.company)} */}
       <ReactNotificationAlert ref={notificationAlert} />
       <PanelHeader size="sm" />
       <div className="content">
@@ -124,16 +131,16 @@ const User = () => {
           <Col md="12">
             <Card>
               <CardHeader>
-                <h5 className="title">My Profile</h5>
+                <h5 className="title">Profil</h5>
               </CardHeader>
               <CardBody>
                 <Form onSubmit={handleUserSubmit}>
                   <Row>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>First Name</label>
+                        <label>Ime</label>
                         <Input
-                          placeholder="First name"
+                          placeholder="Ime"
                           type="text"
                           value={userData.firstName}
                           onChange={handleUserChangeInput}
@@ -143,9 +150,9 @@ const User = () => {
                     </Col>
                     <Col className="px-1" md="3">
                       <FormGroup>
-                        <label>Last Name</label>
+                        <label>Prezime</label>
                         <Input
-                          placeholder="Last name"
+                          placeholder="Prezime"
                           type="text"
                           onChange={handleUserChangeInput}
                           value={userData.lastName}
@@ -155,9 +162,9 @@ const User = () => {
                     </Col>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Email</label>
+                        <label>E-mail</label>
                         <Input
-                          placeholder="Email"
+                          placeholder="E-mail"
                           type="email"
                           onChange={handleUserChangeInput}
                           value={userData.email}
@@ -181,9 +188,9 @@ const User = () => {
                   <Row>
                     <Col className="pl-1" md="4">
                       <FormGroup>
-                        <label>Phone Number</label>
+                        <label>Mobitel</label>
                         <Input
-                          placeholder="Phone number"
+                          placeholder="09xxxxxxxx"
                           type="number"
                           onChange={handleUserChangeInput}
                           value={userData.phoneNumber}
@@ -198,7 +205,7 @@ const User = () => {
                         className="btn btn-primary btn-block btn-round"
                         type="submit"
                       >
-                        Submit
+                        Spremi
                       </Button>
                     </Col>
                   </Row>
@@ -212,7 +219,7 @@ const User = () => {
           <Col md="12">
             <Card>
               <CardHeader>
-                <h5 className="title">My Company</h5>
+                <h5 className="title">Firma</h5>
                 {/*style={{float: isCompanyDisabled ? "none" : "left"}}*/}
                 {/* {isCompanyDisabled ? <></> : <><i className="now-ui-icons ui-1_simple-remove primary edit-company" onClick={handleEnableComapnyEdit}></i></>} */}
               </CardHeader>
@@ -221,9 +228,9 @@ const User = () => {
                   <Row>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Name</label>
+                        <label>Ime firme</label>
                         <Input
-                          placeholder="Name"
+                          placeholder="Ime firme"
                           type="text"
                           value={companyData.name}
                           onChange={handleCompanyChangeInput}
@@ -247,9 +254,9 @@ const User = () => {
                     </Col>
                     <Col className="pr-1" md="3">
                       <FormGroup>
-                        <label>Email</label>
+                        <label>E-mail</label>
                         <Input
-                          placeholder="Email"
+                          placeholder="E-mail"
                           type="email"
                           onChange={handleCompanyChangeInput}
                           value={companyData.email}
@@ -260,9 +267,9 @@ const User = () => {
                     </Col>
                     <Col className="pl-1" md="3">
                       <FormGroup>
-                        <label>Address</label>
+                        <label>Adresa</label>
                         <Input
-                          placeholder="Address"
+                          placeholder="Adresa"
                           type="text"
                           onChange={handleCompanyChangeInput}
                           value={companyData.address}
@@ -275,9 +282,9 @@ const User = () => {
                   <Row>
                     <Col className="pl-1" md="3">
                       <FormGroup>
-                        <label>City</label>
+                        <label>Grad</label>
                         <Input
-                          placeholder="City"
+                          placeholder="Grad"
                           type="text"
                           onChange={handleCompanyChangeInput}
                           value={companyData.city}
@@ -288,9 +295,9 @@ const User = () => {
                     </Col>
                     <Col className="pl-1" md="3">
                       <FormGroup>
-                        <label>Postal code</label>
+                        <label>Poštanski broj</label>
                         <Input
-                          placeholder="Postal code"
+                          placeholder="Poštanski broj"
                           type="number"
                           onChange={handleCompanyChangeInput}
                           value={companyData.postalCode}
@@ -301,9 +308,9 @@ const User = () => {
                     </Col>
                     <Col className="pl-1" md="3">
                       <FormGroup>
-                        <label>Phone number</label>
+                        <label>Kontakt broj</label>
                         <Input
-                          placeholder="Phone number"
+                          placeholder="Kontakt broj"
                           type="number"
                           onChange={handleCompanyChangeInput}
                           value={companyData.phoneNumber}
@@ -314,9 +321,9 @@ const User = () => {
                     </Col>
                     <Col className="pl-1" md="3">
                       <FormGroup>
-                        <label>Website</label>
+                        <label>Web stranica</label>
                         <Input
-                          placeholder="Website"
+                          placeholder="Web stranica"
                           type="text"
                           onChange={handleCompanyChangeInput}
                           value={companyData.website}
@@ -329,9 +336,9 @@ const User = () => {
                   <Row>
                     <Col className="pl-1" md="3">
                       <FormGroup>
-                        <label>Tax rate</label>
+                        <label>Porez. stopa</label>
                         <Input
-                          placeholder="Tax rate"
+                          placeholder="%"
                           type="number"
                           onChange={handleCompanyChangeInput}
                           value={companyData.taxRate}
@@ -342,9 +349,9 @@ const User = () => {
                     </Col>
                     <Col className="pl-1" md="3">
                       <FormGroup>
-                        <label>Reference</label>
+                        <label>Napomena (opcionalno)</label>
                         <Input
-                          placeholder="Reference"
+                          placeholder="Upišite napomen..."
                           type="text"
                           onChange={handleCompanyChangeInput}
                           value={companyData.reference}
@@ -355,9 +362,9 @@ const User = () => {
                     </Col>
                     <Col className="pl-1" md="3">
                       <FormGroup>
-                        <label>Custom reference</label>
+                        <label>Dodatna napomena (opcionalno)</label>
                         <Input
-                          placeholder="Custom reference"
+                          placeholder="Upišite dodatnu napomenu..."
                           type="text"
                           onChange={handleCompanyChangeInput}
                           value={companyData.customReference}
@@ -367,6 +374,19 @@ const User = () => {
                       </FormGroup>
                     </Col>
                   </Row>
+                  <Row>
+                    <Col>
+                      <label style={{color: "gray"}}>U sustavu PDV-a?</label>
+                      <Input 
+                        type="checkbox" 
+                        onChange={handleCompanyChangeInput}
+                        style={{marginLeft: "5px", fontSize: "16px", border: "2px solid gray"}}
+                        checked={companyData.isVATsystem}
+                        name="isVATsystem"
+                        disabled={isCompanyDisabled}/>
+                        
+                    </Col>
+                </Row>
                 </Form>
                 <Row>
                   <Col md="3">
@@ -377,7 +397,7 @@ const User = () => {
                         type="button"
                         onClick={handleEnableComapnyEdit}
                       >
-                        EDIT
+                        UREDI
                       </Button>
                     ) : (
                       <Button
@@ -386,11 +406,12 @@ const User = () => {
                         type="submit"
                         onClick={handleComapnySubmit}
                       >
-                        SAVE
+                        SPREMI PROMJENE
                       </Button>
                     )}
                   </Col>
                 </Row>
+                
               </CardBody>
             </Card>
           </Col>

@@ -92,6 +92,8 @@ const Services = () => {
   const handleServiceEdit = (data) => (e) => {
     setServiceData(data);
     setIsEditedService(true);
+
+    document.getElementById("editAnchor").scrollIntoView();
   };
 
   const handleDeleteService = (e) => {
@@ -135,7 +137,7 @@ const Services = () => {
               <CardHeader>
                 <Row>
                   <Col md="12" className="center-custom">
-                    <h5 className="title">Dodaj uslugu</h5>
+                    <h5 className="title" id="editAnchor">Dodaj uslugu</h5>
                     {isEditedService ? (
                       <Button
                         variant="info"
@@ -224,7 +226,7 @@ const Services = () => {
                   <tbody>
                     {services.map((data) => {
                       return (
-                        <tr key={data.id} onClick={handleServiceEdit(data)}>
+                        <tr key={data.id} onClick={handleServiceEdit(data)} style={{cursor: "pointer"}}>
                           <td>{data.serviceNumber}</td>
                           <td>{data.serviceName}</td>
                         </tr>

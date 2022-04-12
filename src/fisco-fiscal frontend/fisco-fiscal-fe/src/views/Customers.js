@@ -110,7 +110,10 @@ const Customers = () => {
 
   const handleCustomerEdit = (data) => (e) => {
     setCustomerData(data);
+    setCustomerData(data);
     setIsEditedCustomer(true);
+
+    document.getElementById("editAnchor").scrollIntoView();
   };
 
   const handleDeleteCustomer = (e) => {
@@ -145,6 +148,7 @@ const Customers = () => {
 
   return (
     <>
+    {console.log(customersRed.customers)}
       <ReactNotificationAlert ref={notificationAlert} />
       <PanelHeader size="sm" />
       <div className="content">
@@ -154,7 +158,7 @@ const Customers = () => {
               <CardHeader>
                 <Row>
                   <Col md="12" className="center-custom">
-                    <h5 className="title">Kupci</h5>
+                    <h5 className="title" id="editAnchor">Kupci</h5>
                     {isEditedCustomer ? (
                       <Button
                         variant="info"
@@ -281,7 +285,7 @@ const Customers = () => {
                     
                   </Row>
                   <Row>
-                    <Col className="px-1" md="3">
+                    <Col md="3">
                       <FormGroup>
                         <label>Država</label>
                         <Input
@@ -294,7 +298,7 @@ const Customers = () => {
                         <p className="error">{formErrors.country}</p>
                       </FormGroup>
                     </Col>
-                    <Col className="pl-1" md="4">
+                    <Col md="3">
                       <FormGroup>
                         <label>Mobitel</label>
                         <Input
@@ -307,7 +311,7 @@ const Customers = () => {
                         <p className="error">{formErrors.phoneNumber}</p>
                       </FormGroup>
                     </Col>
-                    <Col className="pl-1" md="4">
+                    <Col md="3">
                       <FormGroup>
                         <label>Fax</label>
                         <Input
@@ -363,7 +367,7 @@ const Customers = () => {
                   <tbody>
                     {customers.map((data) => {
                       return (
-                        <tr key={data.id} onClick={handleCustomerEdit(data)}>
+                        <tr key={data.id} onClick={handleCustomerEdit(data)} style={{cursor: "pointer"}}>
                           <td>
                             {data.firstName} {data.lastName}
                           </td>
