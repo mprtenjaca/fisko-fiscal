@@ -150,3 +150,29 @@ export const customerValidation = (values) => {
 
     return errors;
   };
+
+  export const offerValidation = (values) => {
+    const errors = {};
+
+    if (!values.serviceModel) {
+      errors.serviceModel = "Odaberite uslugu";
+    }
+    if (!values.customer) {
+      errors.customer = "Odaberite kupca";
+    }
+    if (!values.offerNumber) {
+      errors.offerNumber = "Unesite broj ponude";
+    }
+    if (!values.paymentMethod) {
+      errors.paymentMethod = "Način plaćanja je potreban";
+    }
+    if (!values.offerDate) {
+      errors.offerDate = "Unesite datum ponude";
+    }
+    if (!values.paymentDate) {
+      errors.paymentDate = "Unesite datum plaćanja";
+    }
+    
+
+    return errors;
+  };

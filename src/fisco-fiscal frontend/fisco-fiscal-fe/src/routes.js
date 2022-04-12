@@ -10,6 +10,7 @@ import Customers from "views/Customers";
 import OutputInvoice from "views/OutputInvoice";
 import InputInvoice from "views/InputInvoice";
 import Services from "views/Services";
+import Offer from "views/Offer";
 
 var dashRoutes = [
   {
@@ -19,13 +20,6 @@ var dashRoutes = [
     component: Dashboard,
     layout: "/admin",
   },
-  // {
-  //   path: "/login",
-  //   name: "Login",
-  //   icon: "business_badge",
-  //   component: Login,
-  //   layout: "/admin",
-  // },
   {
     path: "/icons",
     name: "Icons",
@@ -42,60 +36,45 @@ var dashRoutes = [
   },
   {
     path: "/user-page",
-    name: "User Profile",
+    name: "Profil",
     icon: "users_circle-08",
     component: UserPage,
     layout: "/admin",
   },
   {
     path: "/customers",
-    name: "Customers",
+    name: "Kupci",
     icon: "users_single-02",
     component: Customers,
     layout: "/admin",
   },
   {
+    path: "/services",
+    name: "Usluge",
+    icon: "ui-2_settings-90",
+    component: Services,
+    layout: "/admin",
+  },
+  {
     path: "/output-invoice",
-    name: "Output Invoice",
+    name: "Izlazni računi",
     icon: "files_paper",
     component: OutputInvoice,
     layout: "/admin",
   },
   {
     path: "/input-invoice",
-    name: "Input Invoice",
+    name: "Ulazni računi",
     icon: "files_single-copy-04",
     component: InputInvoice,
     layout: "/admin",
   },
   {
-    path: "/services",
-    name: "Services",
-    icon: "ui-2_settings-90",
-    component: Services,
+    path: "/offers",
+    name: "Ponude",
+    icon: "business_briefcase-24",
+    component: Offer,
     layout: "/admin",
   },
-  {
-    path: "/extended-tables",
-    name: "Table List",
-    icon: "files_paper",
-    component: TableList,
-    layout: "/admin",
-  },
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: "design-2_ruler-pencil",
-    component: Typography,
-    layout: "/admin",
-  },
-  // {
-  //   pro: true,
-  //   path: "/upgrade",
-  //   name: "Upgrade to PRO",
-  //   icon: "objects_spaceship",
-  //   component: Upgrade,
-  //   layout: "/admin",
-  // },
 ];
 export default dashRoutes;

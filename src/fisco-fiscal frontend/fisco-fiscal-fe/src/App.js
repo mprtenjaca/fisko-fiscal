@@ -14,6 +14,7 @@ import { getOutputInvoices } from "redux/actions/outputInvoiceAction";
 import { getServices } from "redux/actions/serviceAction";
 import { getCompany } from "redux/actions/companyAction";
 import { getInputInvoices } from "redux/actions/inputInvoiceAction";
+import { getOffers } from "redux/actions/offerAction";
 
 const App = () => {
   const { auth } = useSelector((state) => state);
@@ -26,11 +27,12 @@ const App = () => {
 
   useEffect(() => {
     if (auth.token) {
+      dispatch(getCompany(auth));
       dispatch(getCustomers(auth));
+      dispatch(getServices(auth));
       dispatch(getOutputInvoices(auth));
       dispatch(getInputInvoices(auth));
-      dispatch(getServices(auth));
-      dispatch(getCompany(auth));
+      dispatch(getOffers(auth));
     }
     dispatch(refreshToken());
   }, [dispatch, auth.token]);
