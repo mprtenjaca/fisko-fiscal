@@ -44,7 +44,6 @@ public class OutputInvoiceController {
         return optionalOutputInvoice
                 .map(outputInvoice -> new ResponseEntity<>(outputInvoice, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
-
     }
 
     @GetMapping("/admin/{id}")
@@ -83,10 +82,9 @@ public class OutputInvoiceController {
         Optional<ServiceModel> serviceModel = serviceModelService.getById(outputInvoice.getServiceModel().getId());
         Optional<User> user = userService.getUserById(outputInvoice.getUser().getId());
 
-        outputInvoice.setUser(userService.getUserById(outputInvoice.getUser().getId()).orElseGet(null));
-        outputInvoice.setCustomer(customer.get());
-        outputInvoice.setServiceModel(serviceModel.get());
-        outputInvoice.setServiceModel(serviceModel.get());
+        user.ifPresent(outputInvoice::setUser);
+        customer.ifPresent(outputInvoice::setCustomer);
+        serviceModel.ifPresent(outputInvoice::setServiceModel);
 
         OutputInvoice outputInvoiceNew = outputInvoiceService.save(outputInvoice);
         Optional<OutputInvoice> outputInvoiceOptional = outputInvoiceService.update(id, outputInvoiceNew);
