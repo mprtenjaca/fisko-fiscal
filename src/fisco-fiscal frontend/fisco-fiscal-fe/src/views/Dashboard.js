@@ -1,23 +1,6 @@
-/*!
-
-=========================================================
-* Now UI Dashboard React - v1.5.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/now-ui-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/now-ui-dashboard-react/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import React from "react";
+import React, { useEffect, useState } from "react";
 // react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar, Pie, Bubble, Scatter } from "react-chartjs-2";
 
 // reactstrap components
 import {
@@ -49,108 +32,104 @@ import {
   dashboardAllProductsChart,
   dashboard24HoursPerformanceChart,
 } from "variables/charts.js";
+import { useSelector } from "react-redux";
+import { hexToRGB } from "variables/charts";
+import { dashboardPanelChart1 } from "variables/charts";
 
-function Dashboard() {
+const Dashboard = () => {
+  const { outputInvoiceRed, inputInvoiceRed, customersRed, serviceRed, companyRed, auth } =
+    useSelector((state) => state);
+
   return (
     <>
-      <PanelHeader
-        size="lg"
-        content={
-          <Line
-            data={dashboardPanelChart.data}
-            options={dashboardPanelChart.options}
-          />
-        }
-      />
+      <PanelHeader size="sm" />
       <div className="content">
         <Row>
-          <Col xs={12} md={4}>
-            <Card className="card-chart">
-              <CardHeader>
-                <h5 className="card-category">Global Sales</h5>
-                <CardTitle tag="h4">Shipped Products</CardTitle>
-                <UncontrolledDropdown>
-                  <DropdownToggle
-                    className="btn-round btn-outline-default btn-icon"
-                    color="default"
-                  >
-                    <i className="now-ui-icons loader_gear" />
-                  </DropdownToggle>
-                  <DropdownMenu right>
-                    <DropdownItem>Action</DropdownItem>
-                    <DropdownItem>Another Action</DropdownItem>
-                    <DropdownItem>Something else here</DropdownItem>
-                    <DropdownItem className="text-danger">
-                      Remove data
-                    </DropdownItem>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
-              </CardHeader>
+          <Col>
+          <Card className="card-chart">
               <CardBody>
-                <div className="chart-area">
-                  <Line
-                    data={dashboardShippedProductsChart.data}
-                    options={dashboardShippedProductsChart.options}
-                  />
+                <div className="chart-area-lg">
+                <Bar
+                  data={dashboardPanelChart1(outputInvoiceRed.outputInvoices).data}
+                  options={dashboardPanelChart1(outputInvoiceRed.outputInvoices).options}
+                />
                 </div>
               </CardBody>
-              <CardFooter>
-                <div className="stats">
-                  <i className="now-ui-icons arrows-1_refresh-69" /> Just
-                  Updated
-                </div>
-              </CardFooter>
             </Card>
           </Col>
-          <Col xs={12} md={4}>
+        </Row>
+        <Row>
+          <Col xs={12} md={6}>
             <Card className="card-chart">
               <CardHeader>
-                <h5 className="card-category">2021 Sales</h5>
-                <CardTitle tag="h4">All products</CardTitle>
-                <UncontrolledDropdown>
-                  <DropdownToggle
-                    className="btn-round btn-outline-default btn-icon"
-                    color="default"
-                  >
-                    <i className="now-ui-icons loader_gear" />
-                  </DropdownToggle>
-                  <DropdownMenu right>
-                    <DropdownItem>Action</DropdownItem>
-                    <DropdownItem>Another Action</DropdownItem>
-                    <DropdownItem>Something else here</DropdownItem>
-                    <DropdownItem className="text-danger">
-                      Remove data
-                    </DropdownItem>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
-              </CardHeader>
-              <CardBody>
-                <div className="chart-area">
-                  <Line
-                    data={dashboardAllProductsChart.data}
-                    options={dashboardAllProductsChart.options}
-                  />
-                </div>
-              </CardBody>
-              <CardFooter>
-                <div className="stats">
-                  <i className="now-ui-icons arrows-1_refresh-69" /> Just
-                  Updated
-                </div>
-              </CardFooter>
-            </Card>
-          </Col>
-          <Col xs={12} md={4}>
-            <Card className="card-chart">
-              <CardHeader>
-                <h5 className="card-category">Email Statistics</h5>
-                <CardTitle tag="h4">24 Hours Performance</CardTitle>
+                <h5 className="card-category">2022</h5>
+                <CardTitle tag="h4">Klijenti</CardTitle>
               </CardHeader>
               <CardBody>
                 <div className="chart-area">
                   <Bar
-                    data={dashboard24HoursPerformanceChart.data}
-                    options={dashboard24HoursPerformanceChart.options}
+                    data={dashboardShippedProductsChart(customersRed.customers).data}
+                    options={dashboardShippedProductsChart(customersRed.customers).options}
+                  />
+                </div>
+              </CardBody>
+              <CardFooter>
+                <div className="stats">
+                  <i className="now-ui-icons arrows-1_refresh-69" /> Just
+                  Updated
+                </div>
+              </CardFooter>
+            </Card>
+          </Col>
+          <Col xs={12} md={6}>
+            <Card className="card-chart">
+              <CardHeader>
+                <h5 className="card-category">2022</h5>
+                <CardTitle tag="h4">Ulazni računi</CardTitle>
+                {/* <UncontrolledDropdown>
+                  <DropdownToggle
+                    className="btn-round btn-outline-default btn-icon"
+                    color="default"
+                  >
+                    <i className="now-ui-icons loader_gear" />
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem>Action</DropdownItem>
+                    <DropdownItem>Another Action</DropdownItem>
+                    <DropdownItem>Something else here</DropdownItem>
+                    <DropdownItem className="text-danger">
+                      Remove data
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown> */}
+              </CardHeader>
+              <CardBody>
+                <div className="chart-area">
+                  <Bar
+                    data={dashboardAllProductsChart(inputInvoiceRed.inputInvoices).data}
+                    options={dashboardAllProductsChart(inputInvoiceRed.inputInvoices).options}
+                  />
+                </div>
+              </CardBody>
+              <CardFooter>
+                <div className="stats">
+                  <i className="now-ui-icons arrows-1_refresh-69" /> Just
+                  Updated
+                </div>
+              </CardFooter>
+            </Card>
+          </Col>
+          {/* <Col xs={12} md={4}>
+            <Card className="card-chart">
+              <CardHeader>
+                <h5 className="card-category">2022</h5>
+                <CardTitle tag="h4">Usluge</CardTitle>
+              </CardHeader>
+              <CardBody>
+                <div className="chart-area">
+                  <Bar
+                    data={dashboard24HoursPerformanceChart(serviceRed.services).data}
+                    options={dashboard24HoursPerformanceChart(serviceRed.services).options}
                   />
                 </div>
               </CardBody>
@@ -160,9 +139,9 @@ function Dashboard() {
                 </div>
               </CardFooter>
             </Card>
-          </Col>
+          </Col> */}
         </Row>
-        <Row>
+        {/* <Row>
           <Col xs={12} md={6}>
             <Card className="card-tasks">
               <CardHeader>
@@ -371,10 +350,10 @@ function Dashboard() {
               </CardBody>
             </Card>
           </Col>
-        </Row>
+        </Row> */}
       </div>
     </>
   );
-}
+};
 
 export default Dashboard;

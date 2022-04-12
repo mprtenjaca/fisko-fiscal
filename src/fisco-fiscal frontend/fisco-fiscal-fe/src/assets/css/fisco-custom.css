@@ -1,3 +1,6 @@
+html{
+  scroll-behavior: smooth !important;
+}
 .error {
   margin: 4px;
   color: #ff0000;
@@ -55,6 +58,14 @@
 
 .details-section textarea {
   border: 1.5px solid #ced4da;
+}
+
+.details-section-row-x{
+  justify-content: end;
+}
+
+.details-section-x {
+  width: 40px;
 }
 
 .customDialog {
