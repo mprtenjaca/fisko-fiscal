@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public String signUpUser(User user) {
         User userByEmail = userRepository.findUserByEmail(user.getEmail());
 
-        if(userByEmail == null){
+        if(userByEmail != null){
             throw new IllegalStateException("Email already taken");
         }
         String encodedPassword = passwordEncoder.encode(user.getPassword());

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,11 @@ public class RegistrationService {
             throw new IllegalStateException("Email not valid");
         }
 
+        User user = userService.findByEmail(request.getEmail());
+
+        if(Objects.nonNull(user))
+            throw new IllegalStateException("User with this email already exists");
+
         String token = userService.signUpUser(
                 new User(
                         request.getFirstName(),
@@ -42,7 +48,7 @@ public class RegistrationService {
                 )
         );
 
-        String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
+        String link = "http://localhost:8080/auth/registration/confirm?token=" + token;
         emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
 
         return token;

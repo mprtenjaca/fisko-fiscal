@@ -34,7 +34,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "api/v1/auth")
+@RequestMapping( "/auth")
 @AllArgsConstructor
 @CrossOrigin("*")
 public class AuthController {
@@ -52,7 +52,7 @@ public class AuthController {
         return registrationService.register(request);
     }
 
-    @GetMapping(path = "confirm")
+    @GetMapping(path = "/confirm")
     public String confirm(@RequestParam("token") String token){
         return registrationService.confirmToken(token);
     }
