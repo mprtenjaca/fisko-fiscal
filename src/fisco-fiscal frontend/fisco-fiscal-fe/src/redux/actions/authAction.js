@@ -35,6 +35,40 @@ export const login = (data) => async (dispatch) => {
   }
 };
 
+export const register = (data) => async (dispatch) => {
+  // const username = data.username;
+  // const password = data.password;
+  try {
+    dispatch({ type: GLOBALTYPES.ALERT, payload: { loading: true } });
+    const res = await axios.post("/auth/registration", data);
+
+    //console.log(res.data.access_token)
+    // dispatch({
+    //   type: GLOBALTYPES.AUTH,
+    //   payload: {
+    //     token: res.data.access_token,
+    //     user: res.data.user,
+    //   },
+    // });
+
+    // localStorage.setItem("login", true);
+    // localStorage.setItem("tkn_fisco", res.data.access_token);
+    dispatch({
+      type: GLOBALTYPES.ALERT,
+      payload: {
+        success: "Registration successful!",
+      },
+    });
+  } catch (err) {
+    dispatch({
+      type: GLOBALTYPES.ALERT,
+      payload: {
+        error: err,
+      },
+    });
+  }
+};
+
 export const refreshToken = () => async (dispatch) => {
   const firstLogin = localStorage.getItem("login");
   const token = localStorage.getItem("tkn_fisco");
@@ -46,7 +80,7 @@ export const refreshToken = () => async (dispatch) => {
   if (firstLogin) {
     dispatch({ type: GLOBALTYPES.ALERT, payload: { loading: true } });
     try {
-      const res = await axios.get("/api/v1/auth/token/refresh", config);
+      const res = await axios.get("/auth/token/refresh", config);
       console.log("Refresh token!");
       
       dispatch({

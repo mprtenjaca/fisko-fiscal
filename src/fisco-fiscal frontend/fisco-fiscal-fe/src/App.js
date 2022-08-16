@@ -15,6 +15,7 @@ import { getServices } from "redux/actions/serviceAction";
 import { getCompany } from "redux/actions/companyAction";
 import { getInputInvoices } from "redux/actions/inputInvoiceAction";
 import { getOffers } from "redux/actions/offerAction";
+import Register from "views/Register";
 
 const App = () => {
   const { auth } = useSelector((state) => state);
@@ -43,24 +44,36 @@ const App = () => {
       <div className="App">
         <div className="main">
           <Switch>
-            {/* {auth.token ? (
-              <Route path="/admin" render={(props) => <Admin {...props} />} />
-            ) : (
-              <Route path="/login" component={Login} />
-            )}
-            <Redirect to={auth.token ? "/admin" : "/login"} /> */}
             
+            {/* Default path */}
+            <Route exact path="/">
+              <Redirect to="/login" />
+            </Route>
+
             { auth.token ? (
               <Route path="/admin" render={(props) => <Admin {...props} />} />
             ) : (
-              <Route path="/login" component={Login} />
+              <>
+                <Route path="/login" component={Login} />
+                <Route path='/register' component={Register}/>
+              </>
+            
             )}
-            <Redirect to={auth.token ? 
+            {/* <Redirect to={auth.token ? 
 
               history.location.pathname === "/login" || history.location.pathname === "/" ? "/admin/dashboard" : history.location.pathname
               
-              : "/login"} />
+              : history.location.pathname} /> */}
+
+              <Redirect to={
+                auth.token ? 
+                (history.location.pathname === "/login" || history.location.pathname === "/register" || history.location.pathname === "/") ? "admin/dashboard"
+                : history.location.pathname
+                : history.location.pathname
+              } />
+
           </Switch>
+          
         </div>
       </div>
     </Router>

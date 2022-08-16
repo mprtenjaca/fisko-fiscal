@@ -20,6 +20,7 @@ import { login } from "redux/actions/authAction";
 import NotificationAlert from "react-notification-alert";
 import "assets/css/login.css";
 import notify from "variables/notify";
+import { Link } from "react-router-dom";
 
 const LOGIN_URL = "/login";
 
@@ -109,7 +110,7 @@ const Login = () => {
                   </div>
                   <p className="text-center mt-5">
                     Don't have an account?
-                    <span className="text-info">Sign Up</span>
+                    <Link to="/register"><span className="text-info">Sign Up</span></Link>
                   </p>
                   <p className="text-center text-info">Forgot your password?</p>
                 </div>
