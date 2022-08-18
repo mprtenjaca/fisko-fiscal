@@ -4,6 +4,7 @@ import axios from "services/auth/api/axios.js";
 export const login = (data) => async (dispatch) => {
   const username = data.username;
   const password = data.password;
+
   try {
     dispatch({ type: GLOBALTYPES.ALERT, payload: { loading: true } });
     const res = await axios.post("/login", { username, password });
