@@ -12,12 +12,12 @@ import lombok.Setter;
 public class CompanyDTO {
     private Long id;
     private String name;
-    private String oib;
-    private String email;
+    private String companyOib;
+    private String companyEmail;
     private String address;
     private String city;
     private String postalCode;
-    private String phoneNumber;
+    private String companyPhoneNumber;
     private Integer taxRate;
     private Boolean isVATsystem;
     private String reference;

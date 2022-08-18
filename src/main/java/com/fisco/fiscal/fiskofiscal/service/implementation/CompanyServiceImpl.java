@@ -49,12 +49,12 @@ public class CompanyServiceImpl implements CompanyService {
     public Optional<CompanyDTO> update(Long id, Company company) {
         String updateQuery = "UPDATE company SET " +
                 "name = ?, " +
-                "oib = ?, " +
-                "email = ?," +
+                "company_oib = ?, " +
+                "company_email = ?," +
                 "address = ?, " +
                 "city = ?, " +
                 "postal_code = ?, " +
-                "phone_number = ?, " +
+                "company_phone_number = ?, " +
                 "tax_rate = ?, " +
                 "isvatsystem = ?, " +
                 "reference = ?, " +
@@ -64,12 +64,12 @@ public class CompanyServiceImpl implements CompanyService {
 
         jdbc.update(updateQuery,
                 company.getName(),
-                company.getOib(),
-                company.getEmail(),
+                company.getCompanyOib(),
+                company.getCompanyEmail(),
                 company.getAddress(),
                 company.getCity(),
                 company.getPostalCode(),
-                company.getPhoneNumber(),
+                company.getCompanyPhoneNumber(),
                 company.getTaxRate(),
                 company.getIsVATsystem(),
                 company.getReference(),
@@ -89,12 +89,12 @@ public class CompanyServiceImpl implements CompanyService {
         return new CompanyDTO(
                 company.getId(),
                 company.getName(),
-                company.getOib(),
-                company.getEmail(),
+                company.getCompanyOib(),
+                company.getCompanyEmail(),
                 company.getAddress(),
                 company.getCity(),
                 company.getPostalCode(),
-                company.getPhoneNumber(),
+                company.getCompanyPhoneNumber(),
                 company.getTaxRate(),
                 company.getIsVATsystem(),
                 company.getReference(),

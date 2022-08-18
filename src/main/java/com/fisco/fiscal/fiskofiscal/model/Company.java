@@ -29,12 +29,12 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private String oib;
-    private String email;
+    private String companyOib;
+    private String companyEmail;
     private String address;
     private String city;
     private String postalCode;
-    private String phoneNumber;
+    private String companyPhoneNumber;
     private Integer taxRate;
     @Column(columnDefinition="boolean default false")
     private Boolean isVATsystem;
