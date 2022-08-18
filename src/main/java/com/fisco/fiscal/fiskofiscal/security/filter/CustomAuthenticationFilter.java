@@ -82,7 +82,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         data.put("refresh_token", refreshToken);
         data.put("user", domainUser);
         response.setContentType(APPLICATION_JSON_VALUE);
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
         new ObjectMapper().writeValue(response.getOutputStream(), data);
     }
