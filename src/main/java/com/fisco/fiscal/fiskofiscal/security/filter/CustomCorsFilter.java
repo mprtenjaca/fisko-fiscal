@@ -36,7 +36,7 @@ public class CustomCorsFilter {
                 registry.addMapping("/**")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
-                        .allowedOrigins("http://localhost:3000");
+                        .allowedOrigins("*");
             }
         };
     }
