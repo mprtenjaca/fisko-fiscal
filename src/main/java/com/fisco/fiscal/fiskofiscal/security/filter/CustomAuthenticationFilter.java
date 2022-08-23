@@ -50,8 +50,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             password = request.getParameter("password");
         }
 
-        log.info("Email is: {}", email);
-        log.info("Password is: {}", password);
+//        log.info("Email is: {}", email);
+//        log.info("Password is: {}", password);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
@@ -65,13 +65,13 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         String accessToken = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 60)) //60 days
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
 
         String refreshToken = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30)) //30 days
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
 
