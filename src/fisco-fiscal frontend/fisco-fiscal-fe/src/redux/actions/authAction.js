@@ -37,8 +37,6 @@ export const login = (data) => async (dispatch) => {
 };
 
 export const register = (data) => async (dispatch) => {
-  // const username = data.username;
-  // const password = data.password;
   try {
     dispatch({ type: GLOBALTYPES.ALERT, payload: { loading: true } });
     const res = await axios.post("/auth/registration", data);

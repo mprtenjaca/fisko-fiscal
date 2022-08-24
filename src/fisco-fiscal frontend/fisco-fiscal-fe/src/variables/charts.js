@@ -219,8 +219,7 @@ export const dashboardPanelChart1 = (data) => {
           display: true,
         },
         subtitle: {
-          display: true,
-          text: "Marko",
+          display: true
         },
         tooltips: {
           backgroundColor: "#fff",
