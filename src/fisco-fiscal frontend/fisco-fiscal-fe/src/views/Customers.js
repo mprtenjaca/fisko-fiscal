@@ -356,7 +356,7 @@ const Customers = () => {
                 <CardTitle tag="h4">Customers</CardTitle>
               </CardHeader>
               <CardBody>
-                <Table responsive>
+                <Table responsive className="table-custom">
                   <thead className="text-primary">
                     <tr>
                       {customersHead.map((prop, key) => {

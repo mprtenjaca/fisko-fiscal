@@ -442,13 +442,13 @@ const OutputInvoice = () => {
                                   key={customer.id}
                                   value={index}
                                 >
-                                  {customer.firstName} {customer.lastName}
+                                  {customer.companyName ? customer.companyName : customer.firstName  + " " + customer.lastName}
                                 </option>
                               );
                             }
                             return (
                               <option key={customer.id} value={index}>
-                                {customer.firstName} {customer.lastName}
+                                {customer.companyName ? customer.companyName : customer.firstName  + " " + customer.lastName}
                               </option>
                             );
                           })}
@@ -760,7 +760,7 @@ const OutputInvoice = () => {
                 {/* <CardTitle tag="h4">Izlazni računi</CardTitle> */}
               </CardHeader>
               <CardBody>
-                <Table responsive>
+                <Table responsive className="table-custom">
                   <thead className="text-primary">
                     <tr>
                       {oInvoiceHead.map((prop, key) => {
@@ -778,7 +778,7 @@ const OutputInvoice = () => {
                         >
                           <td>{data.invoiceNumber}</td>
                           <td>
-                            {data.customer.firstName} {data.customer.lastName}
+                            {data.customer.companyName ? data.customer.companyName : data.customer.firstName  + " " + data.customer.lastName}
                           </td>
                           <td>{data.finalPrice} kn</td>
                           <td>{data.dateAndTime}</td>

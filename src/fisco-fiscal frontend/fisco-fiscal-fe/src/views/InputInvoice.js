@@ -510,7 +510,7 @@ const InputInvoice = () => {
                 <CardTitle tag="h4">Izlazni računi</CardTitle>
               </CardHeader>
               <CardBody>
-                <Table responsive>
+                <Table responsive className="table-custom">
                   <thead className="text-primary">
                     <tr>
                       {oInputInvoiceHead.map((prop, key) => {
