@@ -1,11 +1,9 @@
 package com.fisco.fiscal.fiskofiscal.enums;
 
-import lombok.AllArgsConstructor;
-
 public enum PaymentMethod {
     GOTOVINA("GOTOVINA"),
     KARTICA("KARTICA"),
-    TRANSAKCIJSKI("TRANSAKCIJSKI RAČUN"),
+    TRANSAKCIJSKI_RAČUN("TRANSAKCIJSKI_RAČUN"),
     ČEK("ČEK"),
     OSTALO("OSTALO");
 
