@@ -28,7 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateOutputInvoice } from "redux/actions/outputInvoiceAction";
 import { createOutputInvoice } from "redux/actions/outputInvoiceAction";
 import { deleteOutputInvoice } from "redux/actions/outputInvoiceAction";
-import { invoiceTypes, measureUnits, paymentMethods } from "components/Util/Util";
+import { invoiceTypes, measureUnits, paymentMethods, hrkToEur } from "components/Util/Util";
 import { useHistory } from "react-router-dom";
 import Dialog from "components/FixedPlugin/CustomDialog";
 import ReactNotificationAlert from "react-notification-alert";
@@ -718,13 +718,7 @@ const OutputInvoice = () => {
                     <Col className="pr-1" md="3">
                       <FormGroup>
                         <label>Ukupno</label>
-                        <h3>{finalPrice} kn</h3>
-                        {/* <Input
-                          disabled
-                          type="number"
-                          value={finalPrice}
-                          name="finalPrice"
-                        /> */}
+                        <h3>{finalPrice} kn / {hrkToEur(finalPrice)} €</h3>
                       </FormGroup>
                     </Col>
                   </Row>
