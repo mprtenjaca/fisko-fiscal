@@ -75,7 +75,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 user.getLastName(),
                 user.getOib(),
                 user.getEmail(),
-                user.getPhoneNumber());
+                user.getPhoneNumber(),
+                user.getId());
 
         return Optional.ofNullable(user).map(this::mapUserToDTO);
     }
@@ -115,8 +116,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         );
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-        //TODO: SEND EMAIL
-
         return token;
     }
 
@@ -138,7 +137,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 user.getLastName(),
                 user.getOib(),
                 user.getEmail(),
-                user.getPassword()
+                user.getPhoneNumber()
         );
     }
 }

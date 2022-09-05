@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update (@RequestParam("id") Long id, @RequestBody User user){
+    public ResponseEntity<UserDTO> update (@PathVariable Long id, @RequestBody User user){
         Optional<UserDTO> optionalUpdatedUser = userService.update(id, user);
         if(optionalUpdatedUser.isPresent()){
             return new ResponseEntity<>(optionalUpdatedUser.get(), HttpStatus.OK);
